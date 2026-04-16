@@ -1,22 +1,13 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import RocketLaunchRoundedIcon from "@mui/icons-material/RocketLaunchRounded";
 
 var fn="Inter,Helvetica Neue,Arial,sans-serif";
 var mo="JetBrains Mono,SF Mono,Consolas,monospace";
 var C={bg:"#1C1B18",sf:"#2A2925",ra:"#23221E",bd:"rgba(255,255,255,0.08)",tx:"#E8E4DE",tm:"rgba(232,228,222,0.65)",td:"rgba(232,228,222,0.35)",ac:"#E8580C",al:"rgba(232,88,12,0.12)",gn:"#4ADE80",rd:"#C93B2C",grn:"#1A7D42",pk:"#C43A7B",blue:"#60A5FA",blueAl:"rgba(96,165,250,0.12)",amber:"#FBBF24",amberAl:"rgba(251,191,36,0.12)",violet:"#A78BFA",violetAl:"rgba(167,139,250,0.12)",teal:"#2DD4BF",tealAl:"rgba(45,212,191,0.12)"};
 var msgC={Magnus:"#60A5FA",Camilla:"#C43A7B",Gard:"#E8580C",Anders:"#4ADE80"};
 var stC=[C.rd,C.grn,C.pk];
-
-function WhistlLogo(p){var sz=p.size||20;return <svg width={sz} height={sz} viewBox="0 0 32 32" fill="none">
-<path d="M6 22L14 8" stroke={p.color||"#E8580C"} strokeWidth="2.5" strokeLinecap="round"/>
-<path d="M14 8L22 22" stroke={p.color||"#E8580C"} strokeWidth="2.5" strokeLinecap="round"/>
-<path d="M10 15L22 15" stroke={p.color||"#E8580C"} strokeWidth="2.5" strokeLinecap="round"/>
-<circle cx="25" cy="9" r="3" fill={p.color||"#E8580C"} opacity="0.7"/>
-<path d="M25 9L28 6" stroke={p.color||"#E8580C"} strokeWidth="1.5" strokeLinecap="round"/>
-<path d="M25 9L29 9" stroke={p.color||"#E8580C"} strokeWidth="1.5" strokeLinecap="round"/>
-<path d="M25 9L27 12" stroke={p.color||"#E8580C"} strokeWidth="1.5" strokeLinecap="round"/>
-</svg>}
 
 function FI(p){var s=useState(false);useEffect(function(){var t=setTimeout(function(){s[1](true)},p.delay||0);return function(){clearTimeout(t)}},[]);return <div style={Object.assign({opacity:s[0]?1:0,transform:s[0]?"translateY(0)":"translateY(20px)",transition:"opacity 0.6s ease, transform 0.6s ease"},p.style||{})}>{p.children}</div>}
 
@@ -146,8 +137,7 @@ function Step2(){
 
       <div style={{background:"#201F1C"}}>
         <div style={{padding:"10px 18px",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",gap:10}}>
-          <span style={{width:22,height:22,borderRadius:7,background:"linear-gradient(135deg,#E8580C,#F06B1F)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,fontWeight:900,color:"#fff"}}>{"W"}</span>
-          <span style={{fontSize:14,fontWeight:900,color:C.tx,letterSpacing:"-0.3px"}}>{"Whistl"}</span>
+          <span style={{fontSize:15,fontWeight:900,color:C.ac,letterSpacing:"-0.5px"}}>{"whistl"}</span>
           <span style={{width:1,height:16,background:"rgba(255,255,255,0.08)",margin:"0 4px"}}/>
           <span style={{fontSize:13,color:C.tm,fontWeight:600}}>{"Ny \u00f8kt \u00b7 Torsdag 17. april"}</span>
         </div>
@@ -279,7 +269,7 @@ var teamSessions=[
   {week:"Uke 15 \u00b7 7.\u201313. april"},
   {day:"Man",n:"7",time:"17:00",title:"Skudd og avslutning",meta:"60 min \u00b7 Magne",done:true},
   {day:"Ons",n:"9",time:"17:00",title:"Forsvar og samspill",meta:"60 min \u00b7 Andreas",done:true},
-  {day:"Tor",n:"10",time:"11:00",title:"Kamp vs. Bj\u00f8rnar",meta:"Kamp \u00b7 Susanne",done:true},
+  {day:"Tor",n:"10",time:"11:00",title:"Kamp vs. Andeby",meta:"Kamp \u00b7 Susanne",done:true},
   {week:"Uke 16 \u00b7 14.\u201320. april"},
   {day:"Man",n:"14",time:"17:00",title:"Ballkontroll og skudd",meta:"60 min \u00b7 Andreas",done:true},
   {day:"Tir",n:"15",time:"17:00",title:"Forsvar i grupper",meta:"60 min \u00b7 Susanne",done:true},
@@ -333,8 +323,7 @@ function Step3(){
       <div style={{background:C.sf}}>
         <div style={{padding:"12px 16px",borderBottom:"1px solid "+C.bd,display:"flex",alignItems:"center",gap:10}}>
           <span style={{display:"inline-flex",alignItems:"center",gap:6}}>
-            <span style={{width:20,height:20,borderRadius:6,background:"linear-gradient(135deg,#E8580C,#F06B1F)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:900,color:"#fff"}}>{"W"}</span>
-            <span style={{fontSize:13,fontWeight:900,color:C.tx,letterSpacing:"-0.2px"}}>{"Whistl"}</span>
+            <span style={{fontSize:14,fontWeight:900,color:C.ac,letterSpacing:"-0.5px"}}>{"whistl"}</span>
           </span>
           <span style={{width:1,height:16,background:C.bd,margin:"0 2px"}}/>
           <div style={{width:26,height:26,borderRadius:"50%",background:"#333",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12}}>{"\ud83c\udfc8"}</div>
@@ -420,15 +409,20 @@ function WaitlistForm(){
   var es=useState("");var email=es[0];var setEmail=es[1];
   var rs=useState("");var role=rs[0];var setRole=rs[1];
   var ss=useState(false);var sent=ss[0];var setSent=ss[1];
-  function handleSubmit(e){e.preventDefault();if(email)setSent(true)}
+  var ls=useState(false);var loading=ls[0];var setLoading=ls[1];
+  var errs=useState("");var err=errs[0];var setErr=errs[1];
+  function handleSubmit(e){e.preventDefault();if(!email||loading)return;setLoading(true);setErr("");
+    fetch("https://formspree.io/f/maqaelpl",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:name,email:email,role:role||"ikke valgt"})})
+    .then(function(r){if(r.ok){setSent(true)}else{setErr("Noe gikk galt. Pr\u00f8v igjen.")}setLoading(false)})
+    .catch(function(){setErr("Kunne ikke sende. Sjekk internett og pr\u00f8v igjen.");setLoading(false)})}
   if(sent)return <div style={{background:"linear-gradient(135deg,rgba(74,222,128,0.12),rgba(74,222,128,0.03))",border:"1px solid rgba(74,222,128,0.25)",borderRadius:20,padding:"48px 32px",textAlign:"center"}}>
     <div style={{fontSize:36,marginBottom:12}}>{"🎉"}</div>
     <h2 style={{fontSize:24,fontWeight:900,margin:"0 0 8px",color:C.tx}}>{"Du er p\u00e5 listen!"}</h2>
     <p style={{fontSize:15,color:C.tm,margin:0,lineHeight:1.6}}>{"Vi sender deg en invitasjon s\u00e5 fort Whistl er klar. Takk for interessen!"}</p>
   </div>;
   return <div style={{background:"linear-gradient(135deg,rgba(232,88,12,0.12),rgba(232,88,12,0.03))",border:"1px solid rgba(232,88,12,0.2)",borderRadius:20,padding:"40px 28px"}}>
-    <h2 style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,margin:"0 0 8px"}}>{"F\u00e5 tidlig tilgang"}</h2>
-    <p style={{fontSize:15,color:C.tm,margin:"0 0 24px",lineHeight:1.5}}>{"Whistl er snart klar. Meld deg p\u00e5 ventelisten \u2014 de f\u00f8rste f\u00e5r gratis tilgang."}</p>
+    <h2 style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,margin:"0 0 8px"}}>{"Pr\u00f8ve Whistl?"}</h2>
+    <p style={{fontSize:15,color:C.tm,margin:"0 0 24px",lineHeight:1.5}}>{"Whistl er snart klar. Meld deg p\u00e5 ventelisten \u2014"}</p>
     <form onSubmit={handleSubmit} style={{maxWidth:400,margin:"0 auto",display:"flex",flexDirection:"column",gap:10}}>
       <input value={name} onChange={function(e){setName(e.target.value)}} placeholder="Navn" style={{background:C.ra,border:"1px solid "+C.bd,borderRadius:10,padding:"12px 14px",fontSize:14,color:C.tx,outline:"none",fontFamily:fn}}/>
       <input value={email} onChange={function(e){setEmail(e.target.value)}} type="email" required placeholder="E-post *" style={{background:C.ra,border:"1px solid "+C.bd,borderRadius:10,padding:"12px 14px",fontSize:14,color:C.tx,outline:"none",fontFamily:fn}}/>
@@ -439,7 +433,8 @@ function WaitlistForm(){
         <option value="forelder">Forelder</option>
         <option value="annet">Annet</option>
       </select>
-      <button type="submit" style={{background:"linear-gradient(135deg,#E8580C,#F06B1F)",border:"none",borderRadius:10,padding:"14px 24px",fontSize:16,fontWeight:700,color:"#fff",cursor:"pointer",boxShadow:"0 4px 20px rgba(232,88,12,0.35)",marginTop:4,fontFamily:fn}}>{"Meld meg p\u00e5 ventelisten"}</button>
+      <button type="submit" disabled={loading} style={{background:loading?"#666":"linear-gradient(135deg,#E8580C,#F06B1F)",border:"none",borderRadius:10,padding:"14px 24px",fontSize:16,fontWeight:700,color:"#fff",cursor:loading?"wait":"pointer",boxShadow:loading?"none":"0 4px 20px rgba(232,88,12,0.35)",marginTop:4,fontFamily:fn,opacity:loading?0.7:1,transition:"opacity 0.2s"}}>{loading?"Sender...":"Meld meg p\u00e5 ventelisten"}</button>
+      {err&&<p style={{fontSize:13,color:C.rd,margin:"4px 0 0",fontWeight:600}}>{err}</p>}
     </form>
     <p style={{fontSize:11,color:C.td,marginTop:12}}>{"Ingen spam. Vi sender kun invitasjonen."}</p>
   </div>;
@@ -480,38 +475,54 @@ var stepInfo=[
 /* ── Main ── */
 export default function Landing(){
   var ss=useState(0);var step=ss[0];var setStep=ss[1];
-  useEffect(function(){var d=[12000,15000,6000,5000];var t=setTimeout(function(){setStep(function(p){return(p+1)%4})},d[step]||6000);return function(){clearTimeout(t)}},[step]);
+  var touchRef=useRef(null);
+  function prev(){setStep(function(p){return p>0?p-1:3})}
+  function next(){setStep(function(p){return p<3?p+1:0})}
+  useEffect(function(){
+    var el=touchRef.current;if(!el)return;
+    var x0=null;
+    function onStart(e){x0=e.touches[0].clientX}
+    function onEnd(e){if(x0===null)return;var dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>40){dx<0?next():prev()}}
+    el.addEventListener("touchstart",onStart,{passive:true});
+    el.addEventListener("touchend",onEnd,{passive:true});
+    return function(){el.removeEventListener("touchstart",onStart);el.removeEventListener("touchend",onEnd)};
+  },[]);
 
   return <div style={{minHeight:"100vh",background:C.bg,color:C.tx,fontFamily:fn,overflowX:"hidden"}}>
-    <style>{"*{box-sizing:border-box;margin:0}body{margin:0;background:#1C1B18}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes dot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}@keyframes fadeU{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes slideD{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(232,88,12,0.25);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(232,88,12,0);transform:scale(1.02)}}@keyframes beam{from{transform:translateX(-100%);opacity:0}20%{opacity:1}80%{opacity:1}to{transform:translateX(260%);opacity:0}}@keyframes toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@media(max-width:720px){.s2split{flex-direction:column!important}.s2chat{flex:1 1 auto!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.08)!important;min-height:280px!important}.s2plan{min-height:260px!important}}"}</style>
+    <style>{"*{box-sizing:border-box;margin:0}body{margin:0;background:#1C1B18}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes dot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}@keyframes fadeU{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes slideD{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(232,88,12,0.25);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(232,88,12,0);transform:scale(1.02)}}@keyframes beam{from{transform:translateX(-100%);opacity:0}20%{opacity:1}80%{opacity:1}to{transform:translateX(260%);opacity:0}}@keyframes toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.cta-btn:hover{transform:translateY(-1px)!important;box-shadow:0 6px 28px rgba(232,88,12,0.45)!important}.step-arrow:hover{opacity:1!important;background:#3a3935!important}@media(max-width:720px){.s2split{flex-direction:column!important}.s2chat{flex:1 1 auto!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.08)!important;min-height:280px!important}.s2plan{min-height:260px!important}.step-arrow{display:none!important}}"}</style>
 
     {/* Compact hero + steps */}
-    <div style={{maxWidth:900,margin:"0 auto",padding:"28px 24px 0",textAlign:"center"}}>
-      <FI><div style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,rgba(232,88,12,0.18),rgba(232,88,12,0.05))",border:"1px solid rgba(232,88,12,0.3)",borderRadius:24,padding:"7px 18px",marginBottom:16}}><span style={{fontSize:14,fontWeight:900,color:C.ac}}>Whistl</span><span style={{fontSize:11,color:C.td,fontWeight:600}}> for trenere</span></div></FI>
-      <FI delay={80}><h1 style={{fontSize:"clamp(26px,5vw,42px)",fontWeight:900,lineHeight:1.1,letterSpacing:"-0.8px",margin:"0 0 10px"}}>{"Fra rotete chatmelding til"}<br/><span style={{color:C.ac}}>{"ferdig treningsplan."}</span></h1></FI>
-      <FI delay={160}><p style={{fontSize:"clamp(14px,2vw,17px)",color:C.tm,lineHeight:1.5,maxWidth:520,margin:"0 auto 20px"}}>{"Beskriv \u00f8kten. AI-en strukturerer. Laget f\u00e5r planen."}</p></FI>
+    <div style={{maxWidth:900,margin:"0 auto",padding:"48px 24px 0",textAlign:"center"}}>
+      <FI><div style={{display:"inline-flex",alignItems:"center",gap:6,background:C.sf,border:"1px solid "+C.bd,borderRadius:24,padding:"6px 16px 6px 12px",marginBottom:20}}><span style={{fontSize:15,fontWeight:900,color:C.ac,letterSpacing:"-0.5px"}}>{"whistl"}</span><span style={{width:1,height:12,background:C.bd}}/><span style={{fontSize:11,color:C.td,fontWeight:600}}>{"for trenere"}</span></div></FI>
+      <FI delay={80}><h1 style={{fontSize:"clamp(28px,5.5vw,48px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-1.2px",margin:"0 0 14px"}}>{"Fra rotete chatmelding til"}<br/><span style={{background:"linear-gradient(135deg,#E8580C,#F06B1F)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{"ferdig treningsplan."}</span></h1></FI>
+      <FI delay={160}><p style={{fontSize:"clamp(15px,2.2vw,18px)",color:C.tm,lineHeight:1.6,maxWidth:500,margin:"0 auto 24px"}}>{"Beskriv \u00f8kten. AI-en strukturerer. Laget f\u00e5r planen."}</p></FI>
     </div>
 
-    <div style={{textAlign:"center",marginBottom:8}}>
-      <FI delay={200}><a href="#waitlist" style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,#E8580C,#F06B1F)",borderRadius:12,padding:"12px 28px",color:"#fff",fontSize:15,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 20px rgba(232,88,12,0.35)",transition:"transform 0.2s"}}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/></svg>
-        {"Få tilgang — meld deg på ventelisten"}</a>
-      <p style={{fontSize:11,color:C.td,marginTop:8}}>{"Gratis i beta. Begrenset antall plasser."}</p></FI>
+    <div style={{textAlign:"center",marginBottom:12}}>
+      <FI delay={200}><a href="#waitlist" className="cta-btn" style={{display:"inline-flex",alignItems:"center",gap:10,background:"linear-gradient(135deg,#E8580C,#F06B1F)",borderRadius:10,padding:"13px 28px",color:"#fff",fontSize:15,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 24px rgba(232,88,12,0.3)",transition:"transform 0.15s,box-shadow 0.15s"}}>
+        {"F\u00e5 Whistl til ditt lag"}
+        <RocketLaunchRoundedIcon style={{fontSize:18}} />
+      </a>
+      <p style={{fontSize:12,color:C.td,marginTop:10,letterSpacing:"0.2px"}}>{" "}</p></FI>
     </div>
 
-    <div style={{maxWidth:900,margin:"0 auto",padding:"0 24px 60px"}}>
-      <FI delay={200}><div style={{display:"flex",justifyContent:"center",gap:4,marginBottom:24,flexWrap:"wrap"}}>
-        {stepInfo.map(function(s,i){var a=i===step;return <div key={i} onClick={function(){setStep(i)}} style={{display:"flex",alignItems:"center",gap:6,padding:"7px 14px",borderRadius:20,background:a?s.col+"18":"transparent",border:"1px solid "+(a?s.col+"40":C.bd),cursor:"pointer",transition:"all 0.3s"}}>
-          <div style={{width:22,height:22,borderRadius:11,background:a?s.col:C.ra,border:"2px solid "+(a?s.col:C.bd),display:"flex",alignItems:"center",justifyContent:"center",fontSize:11,fontWeight:800,color:a?"#fff":C.td}}>{i+1}</div>
-          <div><div style={{fontSize:9,fontWeight:800,color:a?s.col:C.td,textTransform:"uppercase",letterSpacing:.5,lineHeight:1}}>{s.label}</div><div style={{fontSize:12,fontWeight:a?700:500,color:a?C.tx:C.td}}>{s.sub}</div></div>
-        </div>})}
+    <div style={{maxWidth:900,margin:"0 auto",padding:"0 24px 80px"}}>
+      <FI delay={200}><div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:28,flexWrap:"wrap"}}>
+        {stepInfo.map(function(s,i){var a=i===step;return <button key={i} onClick={function(){setStep(i)}} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",borderRadius:10,background:a?C.sf:"transparent",border:"1px solid "+(a?C.bd:"transparent"),cursor:"pointer",transition:"all 0.25s",outline:"none"}}>
+          <span style={{fontSize:12,fontWeight:800,color:a?s.col:C.td,transition:"color 0.25s"}}>{s.sub}</span>
+          {a&&<span style={{width:6,height:6,borderRadius:3,background:s.col}}/>}
+        </button>})}
       </div></FI>
 
-      <FI delay={300}><div style={{minHeight:440}}>
+      <FI delay={300}><div ref={touchRef} style={{minHeight:440,position:"relative"}}>
+        <button className="step-arrow" onClick={prev} aria-label="Previous step" style={{position:"absolute",left:-20,top:"50%",transform:"translateY(-50%)",zIndex:20,width:36,height:36,borderRadius:18,background:C.sf,border:"1px solid "+C.bd,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:0.7,transition:"opacity 0.2s"}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.tx} strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button className="step-arrow" onClick={next} aria-label="Next step" style={{position:"absolute",right:-20,top:"50%",transform:"translateY(-50%)",zIndex:20,width:36,height:36,borderRadius:18,background:C.sf,border:"1px solid "+C.bd,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:0.7,transition:"opacity 0.2s"}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.tx} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
         {step===0&&<Step1/>}
         {step===1&&<Step2/>}
-
-        {/* Step 3: Team list */}
         {step===2&&<Step3/>}
 
         {/* Step 4: Feature montage */}
@@ -542,9 +553,9 @@ export default function Landing(){
     </div>
 
     {/* Comparison */}
-    <div style={{maxWidth:900,margin:"0 auto",padding:"20px 24px 60px"}}>
+    <div style={{maxWidth:900,margin:"0 auto",padding:"0 24px 80px"}}>
       <FI delay={200}><div style={{background:C.sf,border:"1px solid "+C.bd,borderRadius:16,padding:"32px 28px",maxWidth:700,margin:"0 auto"}}>
-        <h2 style={{fontSize:22,fontWeight:900,margin:"0 0 6px",textAlign:"center"}}>{"N\u00e5r trenerne er forberedt, blir \u00f8kten bedre"}</h2>
+        <h2 style={{fontSize:"clamp(20px,3vw,24px)",fontWeight:900,margin:"0 0 8px",textAlign:"center",letterSpacing:"-0.5px"}}>{"N\u00e5r trenerne er forberedt, blir \u00f8kten bedre"}</h2>
         <p style={{fontSize:13,color:C.td,textAlign:"center",margin:"0 0 20px"}}>{"Det handler ikke om \u00e5 planlegge mer \u2014 det handler om at planen n\u00e5r frem."}</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 40px 1fr",gap:0,alignItems:"center"}}>
           <div>
@@ -563,9 +574,9 @@ export default function Landing(){
     </div>
 
     {/* Features */}
-    <div style={{maxWidth:900,margin:"0 auto",padding:"20px 24px 60px"}}>
+    <div style={{maxWidth:900,margin:"0 auto",padding:"0 24px 80px"}}>
       <FI delay={200}><div style={{textAlign:"center",marginBottom:36}}>
-        <h2 style={{fontSize:28,fontWeight:900}}>{"Laget for trenerhverdagen"}</h2>
+        <h2 style={{fontSize:"clamp(22px,4vw,30px)",fontWeight:900,letterSpacing:"-0.5px"}}>{"Laget for trenerhverdagen"}</h2>
         <p style={{fontSize:15,color:C.td,marginTop:8}}>{"Ikke enda en app \u00e5 l\u00e6re seg. Bare skriv \u2014 s\u00e5 ordner resten seg."}</p>
       </div></FI>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",gap:12}}>
@@ -578,19 +589,19 @@ export default function Landing(){
     </div>
 
     {/* Quote */}
-    <div style={{maxWidth:900,margin:"0 auto",padding:"20px 24px 60px"}}>
+    <div style={{maxWidth:900,margin:"0 auto",padding:"0 24px 80px"}}>
       <FI delay={200}><div style={{textAlign:"center",maxWidth:600,margin:"0 auto"}}>
-        <div style={{fontSize:48,color:C.teal,lineHeight:1,marginBottom:8}}>{"\u201c"}</div>
+        <div style={{fontSize:56,color:C.ac,lineHeight:1,marginBottom:4,opacity:0.4}}>{"\u201c"}</div>
         <p style={{fontSize:18,color:C.tm,lineHeight:1.7,fontStyle:"italic",margin:"0 0 16px"}}>{"F\u00f8r skrev jeg en lang melding i trenergruppa som folk scrollet forbi. N\u00e5 limer jeg inn det samme i Whistl, og to sekunder senere har jeg en oversiktlig plan med tider, stasjoner og cues."}</p>
         <div style={{fontSize:13,color:C.td}}>Trener, Oslo</div>
       </div></FI>
     </div>
 
     {/* Waitlist */}
-    <div id="waitlist" style={{maxWidth:900,margin:"0 auto",padding:"20px 24px 80px",textAlign:"center"}}>
+    <div id="waitlist" style={{maxWidth:900,margin:"0 auto",padding:"0 24px 100px",textAlign:"center"}}>
       <FI delay={200}><WaitlistForm/></FI>
     </div>
 
-    <div style={{borderTop:"1px solid "+C.bd,padding:24,textAlign:"center"}}><span style={{fontSize:12,color:C.td}}>{"Whistl AI \u2014 Laget av trenere, for trenere."}</span></div>
+    <div style={{borderTop:"1px solid "+C.bd,padding:"32px 24px",textAlign:"center"}}><span style={{fontSize:14,fontWeight:900,color:C.td,letterSpacing:"-0.5px"}}>{"whistl"}</span><span style={{fontSize:12,color:C.td}}>{" \u00b7 Laget av trenere, for trenere."}</span></div>
   </div>;
 }
