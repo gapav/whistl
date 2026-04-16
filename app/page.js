@@ -4,9 +4,19 @@ import { useState, useEffect, useRef } from "react";
 
 var fn="Inter,Helvetica Neue,Arial,sans-serif";
 var mo="JetBrains Mono,SF Mono,Consolas,monospace";
-var C={bg:"#1C1B18",sf:"#2A2925",ra:"#23221E",bd:"rgba(255,255,255,0.08)",tx:"#E8E4DE",tm:"rgba(232,228,222,0.65)",td:"rgba(232,228,222,0.35)",ac:"#E8580C",al:"rgba(232,88,12,0.12)",gn:"#4ADE80",rd:"#C93B2C",grn:"#1A7D42",pk:"#C43A7B"};
+var C={bg:"#1C1B18",sf:"#2A2925",ra:"#23221E",bd:"rgba(255,255,255,0.08)",tx:"#E8E4DE",tm:"rgba(232,228,222,0.65)",td:"rgba(232,228,222,0.35)",ac:"#E8580C",al:"rgba(232,88,12,0.12)",gn:"#4ADE80",rd:"#C93B2C",grn:"#1A7D42",pk:"#C43A7B",blue:"#60A5FA",blueAl:"rgba(96,165,250,0.12)",amber:"#FBBF24",amberAl:"rgba(251,191,36,0.12)",violet:"#A78BFA",violetAl:"rgba(167,139,250,0.12)",teal:"#2DD4BF",tealAl:"rgba(45,212,191,0.12)"};
 var msgC={Magnus:"#60A5FA",Camilla:"#C43A7B",Gard:"#E8580C",Anders:"#4ADE80"};
 var stC=[C.rd,C.grn,C.pk];
+
+function WhistlLogo(p){var sz=p.size||20;return <svg width={sz} height={sz} viewBox="0 0 32 32" fill="none">
+<path d="M6 22L14 8" stroke={p.color||"#E8580C"} strokeWidth="2.5" strokeLinecap="round"/>
+<path d="M14 8L22 22" stroke={p.color||"#E8580C"} strokeWidth="2.5" strokeLinecap="round"/>
+<path d="M10 15L22 15" stroke={p.color||"#E8580C"} strokeWidth="2.5" strokeLinecap="round"/>
+<circle cx="25" cy="9" r="3" fill={p.color||"#E8580C"} opacity="0.7"/>
+<path d="M25 9L28 6" stroke={p.color||"#E8580C"} strokeWidth="1.5" strokeLinecap="round"/>
+<path d="M25 9L29 9" stroke={p.color||"#E8580C"} strokeWidth="1.5" strokeLinecap="round"/>
+<path d="M25 9L27 12" stroke={p.color||"#E8580C"} strokeWidth="1.5" strokeLinecap="round"/>
+</svg>}
 
 function FI(p){var s=useState(false);useEffect(function(){var t=setTimeout(function(){s[1](true)},p.delay||0);return function(){clearTimeout(t)}},[]);return <div style={Object.assign({opacity:s[0]?1:0,transform:s[0]?"translateY(0)":"translateY(20px)",transition:"opacity 0.6s ease, transform 0.6s ease"},p.style||{})}>{p.children}</div>}
 
@@ -41,9 +51,9 @@ function Step1(){
   useEffect(function(){if(containerRef.current)containerRef.current.scrollTop=containerRef.current.scrollHeight},[idx]);
 
   var notifs=[
-    {icon:"\ud83d\udcbc",from:"Jobben",text:"M\u00f8teinnkalling: Statusm\u00f8te kl 09",badge:3,col:"#60A5FA"},
-    {icon:"\ud83c\udfe0",from:"Familien",text:"Hvem henter i dag?",badge:2,col:"#4ADE80"},
-    {icon:"\u26bd",from:"Fotballgruppa",text:"Kamp l\u00f8rdag flyttet til kl 11",badge:5,col:"#FBBF24"},
+    {icon:"\ud83d\udcbc",from:"Jobben",text:"M\u00f8teinnkalling: Statusm\u00f8te kl 09",badge:3,col:C.blue},
+    {icon:"\ud83c\udfe0",from:"Familien",text:"Hvem henter i dag?",badge:2,col:C.teal},
+    {icon:"\u26bd",from:"Fotballgruppa",text:"Kamp l\u00f8rdag flyttet til kl 11",badge:5,col:C.amber},
   ];
   var notifCount=idx>=10?3:idx>=7?2:idx>=4?1:0;
   var climaxIdx=noise.length;
@@ -453,18 +463,18 @@ var sessions=[
   {day:"L\u00f8r",n:"19",time:"10:00",title:"Kamp vs. Nordstrand",meta:"Kamp \u00b7 Andreas"},
 ];
 var feats=[
-  {i:"\u26a1",t:"Bare skriv \u2014 s\u00e5 funker det",d:"Skriv \u00f8kten som en vanlig melding. AI-en strukturerer alt."},
-  {i:"\ud83c\udfaf",t:"Stasjoner p\u00e5 plass automatisk",d:"Nevn hva hver gruppe skal gj\u00f8re. Byttetid og coach cues legges til."},
-  {i:"\u270f\ufe0f",t:"Juster rett i planen",d:"Endre titler, beskrivelser og cues direkte i forh\u00e5ndsvisningen."},
-  {i:"\ud83d\ude80",t:"\u00c9n knapp \u2014 ferdig delt",d:"Eksporter som HTML eller kopier rett til e-post eller WhatsApp."},
-  {i:"\ud83d\udc65",t:"Lag og lagoppsett",d:"Importer fra Hoopit eller legg til manuelt. Bland og del inn i lag."},
-  {i:"\ud83d\udcf1",t:"Funker p\u00e5 alt",d:"Ser bra ut p\u00e5 mobil, nettbrett og PC."},
+  {i:"\u26a1",t:"Bare skriv \u2014 s\u00e5 funker det",d:"Skriv \u00f8kten som en vanlig melding. AI-en strukturerer alt.",col:C.ac},
+  {i:"\ud83c\udfaf",t:"Stasjoner p\u00e5 plass automatisk",d:"Nevn hva hver gruppe skal gj\u00f8re. Byttetid og coach cues legges til.",col:C.violet},
+  {i:"\u270f\ufe0f",t:"Juster rett i planen",d:"Endre titler, beskrivelser og cues direkte i forh\u00e5ndsvisningen.",col:C.teal},
+  {i:"\ud83d\ude80",t:"\u00c9n knapp \u2014 ferdig delt",d:"Eksporter som HTML eller kopier rett til e-post eller WhatsApp.",col:C.amber},
+  {i:"\ud83d\udc65",t:"Lag og lagoppsett",d:"Importer fra Hoopit eller legg til manuelt. Bland og del inn i lag.",col:C.pk},
+  {i:"\ud83d\udcf1",t:"Funker p\u00e5 alt",d:"Ser bra ut p\u00e5 mobil, nettbrett og PC.",col:C.blue},
 ];
 var stepInfo=[
   {label:"Problemet",sub:"Gruppechatten",col:C.rd},
   {label:"L\u00f8sningen",sub:"Whistl AI",col:C.ac},
   {label:"Resultatet",sub:"Laget ser det",col:C.gn},
-  {label:"Verkt\u00f8yet",sub:"Alt du trenger",col:"#60A5FA"},
+  {label:"Verkt\u00f8yet",sub:"Alt du trenger",col:C.violet},
 ];
 
 /* ── Main ── */
@@ -480,6 +490,13 @@ export default function Landing(){
       <FI><div style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,rgba(232,88,12,0.18),rgba(232,88,12,0.05))",border:"1px solid rgba(232,88,12,0.3)",borderRadius:24,padding:"7px 18px",marginBottom:16}}><span style={{fontSize:14,fontWeight:900,color:C.ac}}>Whistl</span><span style={{fontSize:11,color:C.td,fontWeight:600}}> for trenere</span></div></FI>
       <FI delay={80}><h1 style={{fontSize:"clamp(26px,5vw,42px)",fontWeight:900,lineHeight:1.1,letterSpacing:"-0.8px",margin:"0 0 10px"}}>{"Fra rotete chatmelding til"}<br/><span style={{color:C.ac}}>{"ferdig treningsplan."}</span></h1></FI>
       <FI delay={160}><p style={{fontSize:"clamp(14px,2vw,17px)",color:C.tm,lineHeight:1.5,maxWidth:520,margin:"0 auto 20px"}}>{"Beskriv \u00f8kten. AI-en strukturerer. Laget f\u00e5r planen."}</p></FI>
+    </div>
+
+    <div style={{textAlign:"center",marginBottom:8}}>
+      <FI delay={200}><a href="#waitlist" style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,#E8580C,#F06B1F)",borderRadius:12,padding:"12px 28px",color:"#fff",fontSize:15,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 20px rgba(232,88,12,0.35)",transition:"transform 0.2s"}}>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/></svg>
+        {"Få tilgang — meld deg på ventelisten"}</a>
+      <p style={{fontSize:11,color:C.td,marginTop:8}}>{"Gratis i beta. Begrenset antall plasser."}</p></FI>
     </div>
 
     <div style={{maxWidth:900,margin:"0 auto",padding:"0 24px 60px"}}>
@@ -500,19 +517,19 @@ export default function Landing(){
         {/* Step 4: Feature montage */}
         {step===3&&<div style={{maxWidth:660,margin:"0 auto"}}>
           <div style={{textAlign:"center",marginBottom:20}}>
-            <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(96,165,250,0.10)",border:"1px solid rgba(96,165,250,0.2)",borderRadius:8,padding:"5px 14px",fontSize:11,fontWeight:800,color:"#60A5FA",letterSpacing:0.5,textTransform:"uppercase",marginBottom:10}}>{"Verkt\u00f8yet"}</div>
+            <div style={{display:"inline-flex",alignItems:"center",gap:6,background:C.violetAl,border:"1px solid rgba(167,139,250,0.25)",borderRadius:8,padding:"5px 14px",fontSize:11,fontWeight:800,color:C.violet,letterSpacing:0.5,textTransform:"uppercase",marginBottom:10}}>{"Verkt\u00f8yet"}</div>
             <h3 style={{fontSize:"clamp(20px,3vw,26px)",fontWeight:900,color:C.tx,margin:"0 0 6px",letterSpacing:"-0.3px"}}>{"Alt du trenger \u2014 ingenting du ikke trenger"}</h3>
             <p style={{fontSize:14,color:C.tm,margin:0,lineHeight:1.5}}>{"Bygget for trenere som vil planlegge raskt og dele enkelt."}</p>
           </div>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",gap:10}}>
             {[
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,t:"Hoopit-import",d:"Importer spillerlister rett fra Hoopit. Rosters oppdateres automatisk.",col:"#60A5FA"},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.gn} strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,t:"Lag og lagoppsett",d:"Del inn i lag automatisk eller manuelt. Bland og shuffle med \u00e9n knapp.",col:C.gn},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.violet} strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,t:"Hoopit-import",d:"Importer spillerlister rett fra Hoopit. Rosters oppdateres automatisk.",col:C.violet},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,t:"Lag og lagoppsett",d:"Del inn i lag automatisk eller manuelt. Bland og shuffle med \u00e9n knapp.",col:C.teal},
               {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.ac} strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,t:"Rediger rett i planen",d:"Juster titler, cues og stasjoner direkte i forh\u00e5ndsvisningen. Ingen ekstra steg.",col:C.ac},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FBBF24" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,t:"Delt kalender",d:"\u00d8ktene havner p\u00e5 lagets kalender. Alle trenerne ser hva som er planlagt.",col:"#FBBF24"},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C43A7B" strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,t:"Eksporter som HTML",d:"Last ned \u00f8ktplanen som en ren HTML-fil. Send p\u00e5 e-post, WhatsApp eller skriv ut.",col:"#C43A7B"},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4ADE80" strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,t:"Funker overalt",d:"Desktop, nettbrett og mobil. Responsivt design som tilpasser seg skjermen.",col:"#4ADE80"},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,t:"Delt kalender",d:"\u00d8ktene havner p\u00e5 lagets kalender. Alle trenerne ser hva som er planlagt.",col:C.amber},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.pk} strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,t:"Eksporter som HTML",d:"Last ned \u00f8ktplanen som en ren HTML-fil. Send p\u00e5 e-post, WhatsApp eller skriv ut.",col:C.pk},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.blue} strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,t:"Funker overalt",d:"Desktop, nettbrett og mobil. Responsivt design som tilpasser seg skjermen.",col:C.blue},
             ].map(function(f,i){return <FI key={i} delay={i*80} style={{background:C.sf,border:"1px solid "+C.bd,borderRadius:12,padding:"18px 16px",display:"flex",flexDirection:"column",gap:10}}>
               <div style={{width:36,height:36,borderRadius:10,background:f.col+"14",border:"1px solid "+f.col+"30",display:"flex",alignItems:"center",justifyContent:"center"}}>{f.icon}</div>
               <div style={{fontSize:14,fontWeight:800,color:C.tx}}>{f.t}</div>
@@ -522,12 +539,6 @@ export default function Landing(){
         </div>}
       </div></FI>
 
-      <div style={{textAlign:"center",marginTop:28}}>
-        <a href="#waitlist" style={{display:"inline-flex",alignItems:"center",gap:8,background:"linear-gradient(135deg,#E8580C,#F06B1F)",borderRadius:12,padding:"14px 32px",color:"#fff",fontSize:16,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 20px rgba(232,88,12,0.35)",transition:"transform 0.2s"}}>
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 00-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 012-3.95A12.88 12.88 0 0122 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 01-4 2z"/></svg>
-          {"F\u00e5 tilgang \u2014 meld deg p\u00e5 ventelisten"}</a>
-        <p style={{fontSize:12,color:C.td,marginTop:10}}>{"Gratis i beta. Begrenset antall plasser."}</p>
-      </div>
     </div>
 
     {/* Comparison */}
@@ -558,7 +569,7 @@ export default function Landing(){
         <p style={{fontSize:15,color:C.td,marginTop:8}}>{"Ikke enda en app \u00e5 l\u00e6re seg. Bare skriv \u2014 s\u00e5 ordner resten seg."}</p>
       </div></FI>
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(250px,1fr))",gap:12}}>
-        {feats.map(function(f,idx){return <FI key={idx} delay={300+idx*80}><div style={{background:C.sf,border:"1px solid "+C.bd,borderRadius:14,padding:"24px 20px",height:"100%"}}>
+        {feats.map(function(f,idx){return <FI key={idx} delay={300+idx*80}><div style={{background:C.sf,border:"1px solid "+C.bd,borderLeft:"3px solid "+f.col,borderRadius:14,padding:"24px 20px",height:"100%"}}>
           <div style={{fontSize:28,marginBottom:12}}>{f.i}</div>
           <h3 style={{fontSize:16,fontWeight:800,margin:"0 0 8px",color:C.tx}}>{f.t}</h3>
           <p style={{fontSize:13,color:C.tm,lineHeight:1.6,margin:0}}>{f.d}</p>
@@ -569,7 +580,7 @@ export default function Landing(){
     {/* Quote */}
     <div style={{maxWidth:900,margin:"0 auto",padding:"20px 24px 60px"}}>
       <FI delay={200}><div style={{textAlign:"center",maxWidth:600,margin:"0 auto"}}>
-        <div style={{fontSize:48,color:C.ac,lineHeight:1,marginBottom:8}}>{"\u201c"}</div>
+        <div style={{fontSize:48,color:C.teal,lineHeight:1,marginBottom:8}}>{"\u201c"}</div>
         <p style={{fontSize:18,color:C.tm,lineHeight:1.7,fontStyle:"italic",margin:"0 0 16px"}}>{"F\u00f8r skrev jeg en lang melding i trenergruppa som folk scrollet forbi. N\u00e5 limer jeg inn det samme i Whistl, og to sekunder senere har jeg en oversiktlig plan med tider, stasjoner og cues."}</p>
         <div style={{fontSize:13,color:C.td}}>Trener, Oslo</div>
       </div></FI>
