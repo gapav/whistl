@@ -466,10 +466,10 @@ var feats=[
   {i:"\ud83d\udcf1",t:"Funker p\u00e5 alt",d:"Ser bra ut p\u00e5 mobil, nettbrett og PC.",col:C.blue},
 ];
 var stepInfo=[
-  {label:"Problemet",sub:"Gruppechatten",col:C.rd},
-  {label:"L\u00f8sningen",sub:"Whistl AI",col:C.ac},
-  {label:"Resultatet",sub:"Laget ser det",col:C.gn},
-  {label:"Verkt\u00f8yet",sub:"Alt du trenger",col:C.violet},
+  {label:"Problemet",sub:"Gruppechatten",bl:"Planen forsvinner i st\u00f8yen.",col:C.rd},
+  {label:"L\u00f8sningen",sub:"Whistl AI",bl:"\u00d8kten blir strukturert p\u00e5 sekunder.",col:C.ac},
+  {label:"Resultatet",sub:"Laget ser det",bl:"Alle ser samme plan, med en gang.",col:C.gn},
+  {label:"Verkt\u00f8yet",sub:"Alt du trenger",bl:"Import, redigering og deling samlet.",col:C.violet},
 ];
 
 /* ── Main ── */
@@ -489,13 +489,13 @@ export default function Landing(){
   },[]);
 
   return <div style={{minHeight:"100vh",background:C.bg,color:C.tx,fontFamily:fn,overflowX:"hidden"}}>
-    <style>{"*{box-sizing:border-box;margin:0}body{margin:0;background:#1C1B18}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes dot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}@keyframes fadeU{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes slideD{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(232,88,12,0.25);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(232,88,12,0);transform:scale(1.02)}}@keyframes beam{from{transform:translateX(-100%);opacity:0}20%{opacity:1}80%{opacity:1}to{transform:translateX(260%);opacity:0}}@keyframes toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.cta-btn:hover{transform:translateY(-1px)!important;box-shadow:0 6px 28px rgba(232,88,12,0.45)!important}.step-arrow:hover{opacity:1!important;background:#3a3935!important}@media(max-width:720px){.s2split{flex-direction:column!important}.s2chat{flex:1 1 auto!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.08)!important;min-height:280px!important}.s2plan{min-height:260px!important}.step-arrow{display:none!important}}"}</style>
+    <style>{"*{box-sizing:border-box;margin:0}body{margin:0;background:#1C1B18}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes dot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}@keyframes fadeU{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes slideD{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(232,88,12,0.25);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(232,88,12,0);transform:scale(1.02)}}@keyframes beam{from{transform:translateX(-100%);opacity:0}20%{opacity:1}80%{opacity:1}to{transform:translateX(260%);opacity:0}}@keyframes toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.cta-btn:hover{transform:translateY(-1px)!important;box-shadow:0 6px 28px rgba(232,88,12,0.45)!important}.step-tab:hover{border-color:rgba(255,255,255,0.12)!important;background:rgba(255,255,255,0.04)!important}.step-arrow:hover{opacity:1!important;background:#3a3935!important}@media(max-width:720px){.s2split{flex-direction:column!important}.s2chat{flex:1 1 auto!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.08)!important;min-height:280px!important}.s2plan{min-height:260px!important}.step-arrow{display:none!important}.step-tabs{grid-template-columns:1fr!important}.step-tab{min-height:auto!important;padding:13px 0 12px!important}.step-tab-copy{display:none!important}}"}</style>
 
     {/* Compact hero + steps */}
     <div style={{maxWidth:900,margin:"0 auto",padding:"48px 24px 0",textAlign:"center"}}>
       <FI><div style={{display:"inline-flex",alignItems:"center",gap:6,background:C.sf,border:"1px solid "+C.bd,borderRadius:24,padding:"6px 16px 6px 12px",marginBottom:20}}><span style={{fontSize:15,fontWeight:900,color:C.ac,letterSpacing:"-0.5px"}}>{"whistl"}</span><span style={{width:1,height:12,background:C.bd}}/><span style={{fontSize:11,color:C.td,fontWeight:600}}>{"for trenere"}</span></div></FI>
       <FI delay={80}><h1 style={{fontSize:"clamp(28px,5.5vw,48px)",fontWeight:900,lineHeight:1.08,letterSpacing:"-1.2px",margin:"0 0 14px"}}>{"Fra rotete chatmelding til"}<br/><span style={{background:"linear-gradient(135deg,#E8580C,#F06B1F)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>{"ferdig treningsplan."}</span></h1></FI>
-      <FI delay={160}><p style={{fontSize:"clamp(15px,2.2vw,18px)",color:C.tm,lineHeight:1.6,maxWidth:500,margin:"0 auto 24px"}}>{"Beskriv \u00f8kten. AI-en strukturerer. Laget f\u00e5r planen."}</p></FI>
+      <FI delay={160}><p style={{fontSize:"clamp(15px,2.2vw,18px)",color:C.tm,lineHeight:1.6,maxWidth:500,margin:"0 auto 24px"}}>{" Ikke la treningsplanen drukne i gruppechatten. Beskriv \u00f8kten. Whistl strukturerer. Laget f\u00e5r planen."}</p></FI>
     </div>
 
     <div style={{textAlign:"center",marginBottom:12}}>
@@ -507,10 +507,16 @@ export default function Landing(){
     </div>
 
     <div style={{maxWidth:900,margin:"0 auto",padding:"0 24px 80px"}}>
-      <FI delay={200}><div style={{display:"flex",justifyContent:"center",gap:6,marginBottom:28,flexWrap:"wrap"}}>
-        {stepInfo.map(function(s,i){var a=i===step;return <button key={i} onClick={function(){setStep(i)}} style={{display:"flex",alignItems:"center",gap:8,padding:"8px 16px",borderRadius:10,background:a?C.sf:"transparent",border:"1px solid "+(a?C.bd:"transparent"),cursor:"pointer",transition:"all 0.25s",outline:"none"}}>
-          <span style={{fontSize:12,fontWeight:800,color:a?s.col:C.td,transition:"color 0.25s"}}>{s.sub}</span>
-          {a&&<span style={{width:6,height:6,borderRadius:3,background:s.col}}/>}
+      <FI delay={200}><div className="step-tabs" style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:14,marginBottom:28}}>
+        {stepInfo.map(function(s,i){var a=i===step;return <button key={i} className="step-tab" onClick={function(){setStep(i)}} style={{position:"relative",display:"flex",flexDirection:"column",alignItems:"flex-start",gap:5,padding:"14px 0 13px",borderRadius:0,background:"transparent",border:"none",borderTop:"1px solid "+(a?s.col:C.bd),cursor:"pointer",transition:"border-color 0.2s ease, background 0.2s ease",outline:"none",textAlign:"left",minHeight:98}}>
+          <span style={{display:"inline-flex",alignItems:"baseline",gap:10,width:"100%",position:"relative",zIndex:1}}>
+            <span style={{fontFamily:mo,fontSize:11,fontWeight:700,color:a?s.col:C.td,letterSpacing:0.4}}>{("0"+(i+1)).slice(-2)}</span>
+            <span style={{display:"flex",flexDirection:"column",gap:4,minWidth:0}}>
+              <span style={{fontSize:10,fontWeight:800,color:C.td,textTransform:"uppercase",letterSpacing:0.75}}>{s.label}</span>
+              <span style={{fontSize:16,fontWeight:a?900:700,color:a?C.tx:"rgba(232,228,222,0.82)",letterSpacing:"-0.28px",lineHeight:1.15}}>{s.sub}</span>
+            </span>
+          </span>
+          <span className="step-tab-copy" style={{paddingLeft:21,fontSize:11,color:"rgba(232,228,222,0.46)",lineHeight:1.45,maxWidth:180}}>{s.bl}</span>
         </button>})}
       </div></FI>
 
@@ -535,7 +541,7 @@ export default function Landing(){
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",gap:10}}>
             {[
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.violet} strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,t:"Hoopit-import",d:"Importer spillerlister rett fra Hoopit. Rosters oppdateres automatisk.",col:C.violet},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.violet} strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,t:"Hoopit-import",d:"Importer spillerlister rett fra Hoopit. Lag oppdateres automatisk.",col:C.violet},
               {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,t:"Lag og lagoppsett",d:"Del inn i lag automatisk eller manuelt. Bland og shuffle med \u00e9n knapp.",col:C.teal},
               {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.ac} strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,t:"Rediger rett i planen",d:"Juster titler, cues og stasjoner direkte i forh\u00e5ndsvisningen. Ingen ekstra steg.",col:C.ac},
               {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,t:"Delt kalender",d:"\u00d8ktene havner p\u00e5 lagets kalender. Alle trenerne ser hva som er planlagt.",col:C.amber},
