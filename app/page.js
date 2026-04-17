@@ -71,8 +71,9 @@ function DemoVideoThumb(p){
 }
 
 /* ── Animated Step 1: Chaotic chat ── */
-function Step1(){
+function Step1(p){
   var is=useState(0);var idx=is[0];var setIdx=is[1];
+  var sbs=useState(false);var showSolveBtn=sbs[0];var setShowSolveBtn=sbs[1];
   var containerRef=useRef(null);
   var iv=useInViewOnce({threshold:0.35,rootMargin:"0px 0px -12% 0px"});var stepRef=iv[0];var inView=iv[1];
 
@@ -101,6 +102,12 @@ function Step1(){
   },[inView]);
 
   useEffect(function(){if(containerRef.current)containerRef.current.scrollTop=containerRef.current.scrollHeight},[idx]);
+
+  useEffect(function(){
+    if(idx<noise.length)return;
+    var t=setTimeout(function(){setShowSolveBtn(true)},3500);
+    return function(){clearTimeout(t)};
+  },[idx]);
 
   var notifs=[
     {icon:"\ud83d\udcbc",from:"Jobben",text:"M\u00f8teinnkalling: Statusm\u00f8te kl 09",badge:3,col:C.blue},
@@ -146,11 +153,15 @@ function Step1(){
           })}
         </div>
       </div>
+      {showSolveBtn&&<div style={{position:"absolute",inset:0,borderRadius:24,background:"rgba(10,10,10,0.72)",backdropFilter:"blur(3px)",zIndex:20,display:"flex",alignItems:"center",justifyContent:"center",animation:"fadeU 0.6s ease"}}>
+        <button onClick={p.onSolve} style={{display:"inline-flex",alignItems:"center",gap:10,background:"linear-gradient(135deg,#E8580C,#F06B1F)",border:"none",borderRadius:12,padding:"14px 28px",fontSize:16,fontWeight:900,color:"#fff",cursor:"pointer",boxShadow:"0 8px 32px rgba(232,88,12,0.5)",fontFamily:fn,letterSpacing:"-0.3px"}}>
+          {"L\u00f8sningen?"}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 6 15 12 9 18"/></svg>
+        </button>
+      </div>}
     </div>
   </div>;
 }
-
-/* ── Animated Step 2: Split editor ── */
 function Step2(){
   var ps=useState(0);var ph=ps[0];var setPh=ps[1];
   var ts=useState("");var typed=ts[0];var setTyped=ts[1];
@@ -641,7 +652,7 @@ export default function Landing(){
         <button className="step-arrow" onClick={next} aria-label="Next step" style={{position:"absolute",right:-20,top:"50%",transform:"translateY(-50%)",zIndex:20,width:36,height:36,borderRadius:18,background:C.sf,border:"1px solid "+C.bd,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:0.7,transition:"opacity 0.2s"}}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.tx} strokeWidth="2.5" strokeLinecap="round"><polyline points="9 6 15 12 9 18"/></svg>
         </button>
-        {step===0&&<Step1/>}
+        {step===0&&<Step1 onSolve={function(){setStep(1)}}/>}
         {step===1&&<Step2/>}
         {step===2&&<Step3/>}
 
