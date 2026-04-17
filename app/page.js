@@ -9,12 +9,72 @@ var C={bg:"#1C1B18",sf:"#2A2925",ra:"#23221E",bd:"rgba(255,255,255,0.08)",tx:"#E
 var msgC={Magnus:"#60A5FA",Camilla:"#C43A7B",Gard:"#E8580C",Anders:"#4ADE80"};
 var stC=[C.rd,C.grn,C.pk];
 
-function FI(p){var s=useState(false);useEffect(function(){var t=setTimeout(function(){s[1](true)},p.delay||0);return function(){clearTimeout(t)}},[]);return <div style={Object.assign({opacity:s[0]?1:0,transform:s[0]?"translateY(0)":"translateY(20px)",transition:"opacity 0.6s ease, transform 0.6s ease"},p.style||{})}>{p.children}</div>}
+function useInViewOnce(o){
+  var rs=useRef(null);
+  var ss=useState(false);var seen=ss[0];var setSeen=ss[1];
+  useEffect(function(){
+    if(seen)return;
+    var el=rs.current;
+    if(!el||typeof IntersectionObserver==="undefined"){setSeen(true);return;}
+    var obs=new IntersectionObserver(function(entries){
+      if(entries[0]&&entries[0].isIntersecting){setSeen(true);obs.disconnect();}
+    },{threshold:o&&o.threshold!==undefined?o.threshold:0.2,rootMargin:o&&o.rootMargin?o.rootMargin:"0px 0px -10% 0px"});
+    obs.observe(el);
+    return function(){obs.disconnect();};
+  },[seen,o&&o.threshold,o&&o.rootMargin]);
+  return [rs,seen];
+}
+
+function FI(p){
+  var iv=useInViewOnce({threshold:0.12,rootMargin:"0px 0px -8% 0px"});var ref=iv[0];var inView=iv[1];
+  var s=useState(false);var shown=s[0];var setShown=s[1];
+  useEffect(function(){
+    if(!inView||shown)return;
+    var t=setTimeout(function(){setShown(true)},p.delay||0);
+    return function(){clearTimeout(t)};
+  },[inView,shown,p.delay]);
+  return <div ref={ref} style={Object.assign({opacity:shown?1:0,transform:shown?"translateY(0)":"translateY(20px)",transition:"opacity 0.6s ease, transform 0.6s ease"},p.style||{})}>{p.children}</div>
+}
+
+function DemoVideoThumb(p){
+  return <div style={{position:"relative",width:"100%",maxWidth:p.wide?260:240,borderRadius:9,overflow:"hidden",border:"1px solid "+p.border,background:"#0D1117",boxShadow:"0 10px 26px rgba(0,0,0,0.28)",cursor:"pointer"}}>
+    <div style={{position:"relative",width:"100%",height:0,paddingBottom:"56%",background:p.bg}}>
+      <div style={{position:"absolute",inset:0,background:"linear-gradient(180deg,rgba(255,255,255,0.04),rgba(0,0,0,0.05) 34%,rgba(0,0,0,0.34))"}}/>
+      <div style={{position:"absolute",left:"8%",right:"8%",top:"12%",bottom:"18%",border:"1px solid rgba(255,255,255,0.16)",borderRadius:10,overflow:"hidden",boxShadow:"inset 0 0 0 1px rgba(255,255,255,0.03)"}}>
+        <div style={{position:"absolute",inset:0,background:p.surface}}/>
+        <div style={{position:"absolute",left:"50%",top:0,bottom:0,width:1,background:"rgba(255,255,255,0.16)"}}/>
+        <div style={{position:"absolute",left:"18%",top:"22%",width:"18%",height:"56%",border:"1px solid rgba(255,255,255,0.16)",borderRadius:8}}/>
+        <div style={{position:"absolute",right:"18%",top:"22%",width:"18%",height:"56%",border:"1px solid rgba(255,255,255,0.16)",borderRadius:8}}/>
+        <div style={{position:"absolute",left:"50%",top:"50%",transform:"translate(-50%,-50%)",width:"20%",height:"20%",border:"1px solid rgba(255,255,255,0.16)",borderRadius:"50%"}}/>
+        <div style={{position:"absolute",inset:0,background:p.overlay}}/>
+        <div style={{position:"absolute",left:"15%",top:"36%",width:12,height:12,borderRadius:999,background:p.dot,boxShadow:"0 0 0 4px rgba(255,255,255,0.08), 0 6px 14px rgba(0,0,0,0.22)"}}/>
+        <div style={{position:"absolute",left:"33%",top:"54%",width:10,height:10,borderRadius:999,background:"#F8FAFC",boxShadow:"0 0 0 4px rgba(255,255,255,0.07)"}}/>
+        <div style={{position:"absolute",right:"26%",top:"42%",width:12,height:12,borderRadius:999,background:p.dotAlt,boxShadow:"0 0 0 4px rgba(255,255,255,0.08), 0 6px 14px rgba(0,0,0,0.22)"}}/>
+        <div style={{position:"absolute",right:"12%",bottom:"14%",padding:"4px 6px",borderRadius:999,background:"rgba(8,12,18,0.7)",border:"1px solid rgba(255,255,255,0.08)",fontSize:8,fontWeight:800,color:"rgba(255,255,255,0.78)",letterSpacing:0.4,textTransform:"uppercase"}}>{p.badge}</div>
+      </div>
+      <div style={{position:"absolute",top:8,left:8,display:"inline-flex",alignItems:"center",gap:6,padding:"4px 7px",borderRadius:999,background:"rgba(8,12,18,0.7)",border:"1px solid rgba(255,255,255,0.08)",backdropFilter:"blur(6px)"}}>
+        <span style={{width:6,height:6,borderRadius:999,background:p.dot}}/>
+        <span style={{fontSize:8,fontWeight:800,color:"rgba(255,255,255,0.72)",letterSpacing:0.45,textTransform:"uppercase"}}>{p.kicker}</span>
+      </div>
+      <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <div style={{width:38,height:38,borderRadius:19,background:"rgba(8,12,18,0.72)",border:"1px solid rgba(255,255,255,0.12)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 10px 22px rgba(0,0,0,0.28)"}}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="8 5 20 12 8 19"/></svg>
+        </div>
+      </div>
+      <div style={{position:"absolute",bottom:8,right:8,padding:"3px 6px",borderRadius:6,background:"rgba(8,12,18,0.78)",fontFamily:mo,fontSize:9,fontWeight:700,color:"rgba(255,255,255,0.88)"}}>{p.duration}</div>
+      <div style={{position:"absolute",left:0,right:0,bottom:0,padding:"18px 10px 9px",background:"linear-gradient(transparent,rgba(0,0,0,0.86))"}}>
+        <div style={{fontSize:10,fontWeight:800,color:"#fff",lineHeight:1.35}}>{p.title}</div>
+        <div style={{fontSize:9,color:"rgba(255,255,255,0.58)",marginTop:2}}>{p.meta}</div>
+      </div>
+    </div>
+  </div>;
+}
 
 /* ── Animated Step 1: Chaotic chat ── */
 function Step1(){
   var is=useState(0);var idx=is[0];var setIdx=is[1];
   var containerRef=useRef(null);
+  var iv=useInViewOnce({threshold:0.35,rootMargin:"0px 0px -12% 0px"});var stepRef=iv[0];var inView=iv[1];
 
   var noise=[
     {from:"Camilla",text:"Hvem skal ha med ekstra vester?"},
@@ -34,10 +94,11 @@ function Step1(){
   var delays=[2200,1400,1000,750,580,440,340,280,240,220,200,200,450];
 
   useEffect(function(){
+    if(!inView)return;
     var ts=[];var acc=0;
     for(var i=0;i<delays.length;i++){acc+=delays[i];(function(n,t){ts.push(setTimeout(function(){setIdx(n)},t))})(i+1,acc)}
     return function(){ts.forEach(clearTimeout)};
-  },[]);
+  },[inView]);
 
   useEffect(function(){if(containerRef.current)containerRef.current.scrollTop=containerRef.current.scrollHeight},[idx]);
 
@@ -51,9 +112,9 @@ function Step1(){
   var climactic=idx>=climaxIdx;
   var coachOp=idx>=9?0.22:idx>=6?0.5:idx>=3?0.78:1;
 
-  return <div style={{maxWidth:420,margin:"0 auto"}}>
+  return <div ref={stepRef} style={{maxWidth:420,margin:"0 auto",height:"100%",display:"flex",flexDirection:"column",justifyContent:"flex-start"}}>
     <div style={{textAlign:"center",marginBottom:12}}><span style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(201,59,44,0.12)",border:"1px solid rgba(201,59,44,0.25)",borderRadius:8,padding:"5px 14px",fontSize:12,fontWeight:700,color:C.rd}}>{"Slik ser det ut i dag"}</span></div>
-    <div style={{position:"relative"}}>
+    <div style={{position:"relative",flex:1,minHeight:0,display:"flex",alignItems:"stretch"}}>
       {notifCount>0&&<div style={{position:"absolute",top:-8,left:"5%",right:"5%",zIndex:10,display:"flex",flexDirection:"column",gap:4}}>
         {notifs.slice(0,notifCount).map(function(n,i){return <div key={i} style={{background:"rgba(30,30,30,0.95)",borderRadius:12,padding:"8px 12px",display:"flex",alignItems:"center",gap:8,boxShadow:"0 4px 15px rgba(0,0,0,0.4)",border:"1px solid rgba(255,255,255,0.1)",animation:"slideD 0.3s ease"}}>
           <span style={{fontSize:14}}>{n.icon}</span>
@@ -61,14 +122,14 @@ function Step1(){
           <div style={{width:18,height:18,borderRadius:9,background:n.col,fontSize:9,fontWeight:800,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center"}}>{n.badge}</div>
         </div>})}
       </div>}
-      <div style={{background:"#1a1a1a",borderRadius:24,padding:"12px 0",border:"2px solid #333",boxShadow:"0 8px 40px rgba(0,0,0,0.4)"}}>
-        <div style={{display:"flex",justifyContent:"space-between",padding:"4px 20px 8px",fontSize:10,color:"#888"}}><span>17:00</span><div style={{width:50,height:4,borderRadius:2,background:"#444"}}/><span>85%</span></div>
-        <div style={{padding:"10px 16px",borderBottom:"1px solid #2a2a2a",display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:"#1a1a1a",borderRadius:24,padding:"12px 0",border:"2px solid #333",boxShadow:"0 8px 40px rgba(0,0,0,0.4)",flex:1,minHeight:0,display:"flex",flexDirection:"column",width:"100%"}}>
+        <div style={{display:"flex",justifyContent:"space-between",padding:"4px 20px 8px",fontSize:10,color:"#888",flexShrink:0}}><span>17:00</span><div style={{width:50,height:4,borderRadius:2,background:"#444"}}/><span>85%</span></div>
+        <div style={{padding:"10px 16px",borderBottom:"1px solid #2a2a2a",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
           <div style={{width:32,height:32,borderRadius:"50%",background:"#333",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14}}>{"\ud83c\udfc8"}</div>
           <div style={{flex:1}}><div style={{fontSize:14,fontWeight:700,color:"#e0e0e0"}}>Trenerchat J2016 </div><div style={{fontSize:10,color:"#666"}}>Magnus, Camilla, Gard, Anders</div></div>
           {idx>=3&&<div style={{minWidth:22,height:22,padding:"0 6px",borderRadius:11,background:C.rd,fontSize:10,fontWeight:800,color:"#fff",display:"flex",alignItems:"center",justifyContent:"center"}}>{idx}</div>}
         </div>
-        <div ref={containerRef} style={{padding:"12px 14px",maxHeight:340,overflowY:"auto"}}>
+        <div ref={containerRef} style={{padding:"12px 14px",flex:1,minHeight:0,overflowY:"auto"}}>
           <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",marginBottom:8,opacity:coachOp,transition:"opacity 0.5s"}}>
             <div style={{maxWidth:"85%",padding:"8px 12px",borderRadius:"14px 14px 4px 14px",background:"#E8580C",fontSize:12,lineHeight:1.4,color:"#fff"}}>{"Hei folkens! Plan for torsdag: starter 17:00. Oppvarming 10 min, pasningslek 4v4. Kast til trener 5 min. Stasjoner 40 min bytte 12 min: Magnus angrep 2v1, Camilla forsvar, jeg hinderl\u00f8ype. Avslutning p\u00e5 gangen."}</div>
             <span style={{fontSize:9,color:"#555",marginTop:2}}>14:36</span>
@@ -93,36 +154,43 @@ function Step1(){
 function Step2(){
   var ps=useState(0);var ph=ps[0];var setPh=ps[1];
   var ts=useState("");var typed=ts[0];var setTyped=ts[1];
+  var chatScrollRef=useRef(null);
+  var iv=useInViewOnce({threshold:0.3,rootMargin:"0px 0px -12% 0px"});var stepRef=iv[0];var inView=iv[1];
   var full="Oppvarming 10 min, pasningslek. Kast til trener 5 min. Stasjoner 40 min, bytte 12 min \u2014 angrep, forsvar, hinderl\u00f8ype. Avslutning.";
 
   useEffect(function(){
+    if(!inView)return;
     setPh(0);setTyped("");
     var tt=[];var ti;
-    tt.push(setTimeout(function(){setPh(1)},800));
+    tt.push(setTimeout(function(){setPh(1)},1200));
     tt.push(setTimeout(function(){
       setPh(2);var idx=0;
-      ti=setInterval(function(){idx++;if(idx<=full.length)setTyped(full.slice(0,idx));else clearInterval(ti)},14);
-    },2200));
-    var tDone=2200+full.length*14;
-    tt.push(setTimeout(function(){setPh(3)},tDone+300));
-    tt.push(setTimeout(function(){setPh(4)},tDone+900));
-    tt.push(setTimeout(function(){setPh(5)},tDone+2400));
-    var t6=tDone+2400+outBlocks.length*220+600;
+      ti=setInterval(function(){idx++;if(idx<=full.length)setTyped(full.slice(0,idx));else clearInterval(ti)},22);
+    },3200));
+    var tDone=3200+full.length*22;
+    tt.push(setTimeout(function(){setPh(3)},tDone+900));
+    tt.push(setTimeout(function(){setPh(4)},tDone+2200));
+    tt.push(setTimeout(function(){setPh(5)},tDone+4200));
+    var t6=tDone+4200+outBlocks.length*320+800;
     tt.push(setTimeout(function(){setPh(6)},t6));
-    tt.push(setTimeout(function(){setPh(7)},t6+1800));
-    tt.push(setTimeout(function(){setPh(8)},t6+3200));
-    tt.push(setTimeout(function(){setPh(9)},t6+4400));
+    tt.push(setTimeout(function(){setPh(7)},t6+2600));
+    tt.push(setTimeout(function(){setPh(8)},t6+4800));
+    tt.push(setTimeout(function(){setPh(9)},t6+6600));
     return function(){tt.forEach(clearTimeout);if(ti)clearInterval(ti);};
-  },[]);
+  },[inView]);
 
-  return <div style={{maxWidth:880,margin:"0 auto"}}>
+  useEffect(function(){
+    if(chatScrollRef.current)chatScrollRef.current.scrollTop=chatScrollRef.current.scrollHeight;
+  },[ph,typed]);
+
+  return <div ref={stepRef} style={{maxWidth:880,margin:"0 auto",height:"100%",display:"flex",flexDirection:"column"}}>
     <div style={{textAlign:"center",marginBottom:20}}>
       <div style={{display:"inline-flex",alignItems:"center",gap:6,background:C.al,border:"1px solid rgba(232,88,12,0.25)",borderRadius:8,padding:"5px 14px",fontSize:11,fontWeight:800,color:C.ac,letterSpacing:0.5,textTransform:"uppercase",marginBottom:12}}>{"L\u00f8sningen"}</div>
       <h3 style={{fontSize:"clamp(22px,3.4vw,30px)",fontWeight:900,color:C.tx,margin:"0 0 8px",letterSpacing:"-0.5px",lineHeight:1.15}}>{"Hva om den meldingen gikk "}<span style={{color:C.ac}}>{"HIT"}</span>{" i stedet?"}</h3>
-      <p style={{fontSize:14,color:C.tm,margin:"0 auto",maxWidth:480,lineHeight:1.55}}>{"Coachen beskriver \u00f8kten \u2014 Whistl bygger planen."}</p>
+      <p style={{fontSize:14,color:C.tm,margin:"0 auto",maxWidth:480,lineHeight:1.55}}>{"Treneren beskriver \u00f8kten \u2014 Whistl bygger planen."}</p>
     </div>
 
-    <div style={{position:"relative",background:"#161514",border:"1px solid rgba(255,255,255,0.12)",borderRadius:16,overflow:"hidden",boxShadow:"0 16px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05)"}}>
+    <div style={{position:"relative",background:"#161514",border:"1px solid rgba(255,255,255,0.12)",borderRadius:16,overflow:"hidden",boxShadow:"0 16px 64px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05)",flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
       <div style={{display:"flex",alignItems:"center",gap:8,padding:"9px 14px",background:"linear-gradient(180deg,#2c2b28,#242320)",borderBottom:"1px solid rgba(255,255,255,0.08)"}}>
         <div style={{display:"flex",gap:6,marginRight:4}}>
           <span style={{width:10,height:10,borderRadius:5,background:"#ff5f57"}}/>
@@ -135,19 +203,22 @@ function Step2(){
         </div>
       </div>
 
-      <div style={{background:"#201F1C"}}>
-        <div style={{padding:"10px 18px",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:"#201F1C",flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"10px 18px",borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
           <span style={{fontSize:15,fontWeight:900,color:C.ac,letterSpacing:"-0.5px"}}>{"whistl"}</span>
           <span style={{width:1,height:16,background:"rgba(255,255,255,0.08)",margin:"0 4px"}}/>
           <span style={{fontSize:13,color:C.tm,fontWeight:600}}>{"Ny \u00f8kt \u00b7 Torsdag 17. april"}</span>
         </div>
 
-        <div className="s2split" style={{display:"flex",minHeight:360}}>
-          <div className="s2chat" style={{flex:"0 0 40%",borderRight:"1px solid rgba(255,255,255,0.06)",display:"flex",flexDirection:"column",minHeight:360,background:"rgba(0,0,0,0.12)"}}>
-            <div style={{padding:"8px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+        <div className="s2split" style={{display:"flex",flex:1,minHeight:0,height:"100%"}}>
+          <div className="s2chat" style={{flex:"0 0 40%",borderRight:"1px solid rgba(255,255,255,0.06)",display:"flex",flexDirection:"column",minHeight:0,background:"rgba(0,0,0,0.12)"}}>
+            <div style={{padding:"8px 14px",borderBottom:"1px solid rgba(255,255,255,0.05)",display:"flex",flexDirection:"column",gap:6}}>
               <span style={{fontSize:10,fontWeight:700,color:C.td,textTransform:"uppercase",letterSpacing:0.6}}>{"Chat med AI-assistent"}</span>
+              <div style={{display:"flex",gap:5,flexWrap:"wrap"}}>
+                {[{t:"J2016",c:C.ac},{t:"Tidligere \u00f8kter",c:C.violet},{t:"NHF \u00d8velsesbanken",c:C.blue}].map(function(ch,ci){return <span key={ci} style={{display:"inline-flex",alignItems:"center",gap:4,padding:"2px 8px",borderRadius:999,background:ch.c+"14",border:"1px solid "+ch.c+"30",fontSize:9,fontWeight:700,color:ch.c,letterSpacing:0.3}}><span style={{width:4,height:4,borderRadius:2,background:ch.c,opacity:0.7}}/>{ch.t}</span>})}
+              </div>
             </div>
-            <div style={{flex:1,padding:"14px 14px",overflowY:"auto",display:"flex",flexDirection:"column",gap:12}}>
+            <div ref={chatScrollRef} style={{flex:1,padding:"14px 14px",overflowY:"auto",display:"flex",flexDirection:"column",gap:12}}>
               {ph>=1&&<div style={{animation:"fadeU 0.4s ease"}}>
                 <div style={{fontSize:9,fontWeight:700,color:C.td,marginBottom:4,textTransform:"uppercase",letterSpacing:0.5}}>{"Whistl AI"}</div>
                 <div style={{maxWidth:"92%",padding:"10px 14px",borderRadius:"4px 14px 14px 14px",background:"rgba(255,255,255,0.06)",color:C.tx,fontSize:13,lineHeight:1.55}}>{"Hei Gard! Hva skal dere trene p\u00e5 i dag?"}</div>
@@ -158,14 +229,17 @@ function Step2(){
                   {ph===2?<span>{typed}<span style={{display:"inline-block",width:2,height:14,background:"#fff",marginLeft:1,verticalAlign:"middle",animation:"blink 0.8s step-end infinite"}}/></span>:full}
                 </div>
               </div>}
+              {ph>=3&&<div style={{animation:"fadeU 0.4s ease"}}>
+                <div style={{fontSize:9,fontWeight:700,color:C.td,marginBottom:4,textTransform:"uppercase",letterSpacing:0.5}}>{"Whistl AI"}</div>
+                <div style={{maxWidth:"92%",padding:"10px 14px",borderRadius:"4px 14px 14px 14px",background:"rgba(255,255,255,0.06)",color:C.tx,fontSize:13,lineHeight:1.55}}>{"Jeg tar utgangspunkt i J2016, tidligere \u00f8kter og \u00f8velser som passer niv\u00e5et."}</div>
+              </div>}
               {ph>=4&&ph<6&&<div style={{animation:"fadeU 0.4s ease"}}>
                 <div style={{fontSize:9,fontWeight:700,color:C.td,marginBottom:4,textTransform:"uppercase",letterSpacing:0.5}}>{"Whistl AI"}</div>
                 <div style={{padding:"10px 14px",borderRadius:"4px 14px 14px 14px",background:"rgba(255,255,255,0.06)",display:"flex",alignItems:"center",gap:8}}>
                   <span style={{fontSize:13,color:C.tx}}>{"Lager \u00f8ktplanen"}</span>
-                  <span style={{display:"inline-flex",gap:3}}>
-                    <span style={{width:5,height:5,borderRadius:3,background:C.ac,animation:"dot 1s ease infinite"}}/>
-                    <span style={{width:5,height:5,borderRadius:3,background:C.ac,animation:"dot 1s ease infinite 0.2s"}}/>
-                    <span style={{width:5,height:5,borderRadius:3,background:C.ac,animation:"dot 1s ease infinite 0.4s"}}/>
+                  <span style={{position:"relative",display:"inline-flex",alignItems:"center",justifyContent:"center",width:18,height:18,flexShrink:0}}>
+                    <span style={{position:"absolute",inset:0,borderRadius:999,border:"2px solid rgba(232,228,222,0.12)"}}/>
+                    <span style={{position:"absolute",inset:0,borderRadius:999,border:"2px solid transparent",borderTopColor:C.ac,borderRightColor:"rgba(232,88,12,0.45)",animation:"spin 0.9s linear infinite",boxShadow:"0 0 12px rgba(232,88,12,0.18)"}}/>
                   </span>
                 </div>
               </div>}
@@ -192,7 +266,7 @@ function Step2(){
             </div>
           </div>
 
-          <div className="s2plan" style={{flex:1,padding:"16px 18px",position:"relative",minHeight:360,overflow:"hidden"}}>
+          <div className="s2plan" style={{flex:1,padding:"16px 18px",position:"relative",minHeight:0,overflowY:"auto",overflowX:"hidden"}}>
             <div style={{padding:"0 2px",marginBottom:12}}>
               <span style={{fontSize:10,fontWeight:700,color:C.td,textTransform:"uppercase",letterSpacing:0.6}}>{"\u00d8ktplan"}</span>
             </div>
@@ -203,8 +277,14 @@ function Step2(){
               <div style={{fontSize:11,color:C.td,maxWidth:200,lineHeight:1.5}}>{"Beskriv \u00f8kten i chatten, s\u00e5 bygger vi den."}</div>
             </div>}
 
-            {ph===4&&<div style={{position:"absolute",inset:0,pointerEvents:"none",overflow:"hidden"}}>
-              <div style={{position:"absolute",top:0,bottom:0,left:0,width:"45%",background:"linear-gradient(90deg,transparent,rgba(232,88,12,0.4),transparent)",animation:"beam 0.9s ease-out"}}/>
+            {ph===4&&<div style={{position:"absolute",inset:0,pointerEvents:"none",overflow:"hidden",display:"flex",alignItems:"center",justifyContent:"center",background:"rgba(32,31,28,0.68)",backdropFilter:"blur(2px)"}}>
+              <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:14}}>
+                <div style={{position:"relative",width:64,height:64,display:"inline-flex",alignItems:"center",justifyContent:"center"}}>
+                  <span style={{position:"absolute",inset:0,borderRadius:999,border:"3px solid rgba(232,228,222,0.08)"}}/>
+                  <span style={{position:"absolute",inset:0,borderRadius:999,border:"3px solid transparent",borderTopColor:C.ac,borderRightColor:"rgba(232,88,12,0.4)",animation:"spin 0.95s linear infinite",filter:"drop-shadow(0 0 16px rgba(232,88,12,0.22))"}}/>
+                </div>
+                <div style={{fontSize:12,fontWeight:700,color:C.tm,letterSpacing:0.3}}>{"Bygger \u00f8ktplanen..."}</div>
+              </div>
             </div>}
 
             {ph>=5&&<div style={{display:"flex",flexDirection:"column",gap:8}}>
@@ -229,25 +309,18 @@ function Step2(){
                   {b.cue&&!b.split&&<div style={{marginTop:5,marginLeft:48,background:C.al,borderLeft:"2px solid rgba(232,88,12,0.35)",padding:"4px 8px",borderRadius:"0 6px 6px 0"}}><span style={{fontSize:9,fontWeight:800,color:C.ac}}>{"CUE"}</span><span style={{fontSize:10,color:C.tm,marginLeft:6}}>{b.cue}</span></div>}
                   {i===0&&ph>=9&&<div style={{marginTop:8,marginLeft:48,animation:"fadeU 0.4s ease"}}>
                     <div style={{display:"inline-flex",alignItems:"center",gap:6,marginBottom:5}}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span style={{fontSize:9,fontWeight:700,color:"#60A5FA",textTransform:"uppercase",letterSpacing:0.5}}>{"Videoeksempel \u00b7 NHF \u00d8velsesbanken"}</span></div>
-                    <div style={{position:"relative",width:"100%",maxWidth:260,borderRadius:8,overflow:"hidden",border:"1px solid rgba(96,165,250,0.25)",background:"#0a0a0a",cursor:"pointer"}}>
-                      <div style={{width:"100%",height:0,paddingBottom:"56%",background:"linear-gradient(135deg,#1a1a2e,#16213e)",position:"relative"}}>
-                        <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                          <div style={{width:36,height:36,borderRadius:18,background:"rgba(96,165,250,0.9)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(96,165,250,0.4)"}}>
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><polygon points="8 5 20 12 8 19"/></svg>
-                          </div>
-                        </div>
-                        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"6px 8px",background:"linear-gradient(transparent,rgba(0,0,0,0.8))"}}>
-                          <div style={{fontSize:10,fontWeight:700,color:"#fff"}}>{"Pasningslek 4v4 \u2014 grunnteknikk"}</div>
-                          <div style={{fontSize:9,color:"rgba(255,255,255,0.5)"}}>{"Norges H\u00e5ndballforbund \u00b7 2:14"}</div>
-                        </div>
-                      </div>
-                    </div>
+                    <DemoVideoThumb wide kicker="NHF Øvelsesbanken" title="Pasningslek 4v4 — grunnteknikk" meta="Norges Håndballforbund · 2:14" duration="2:14" badge="Pasning" border="rgba(96,165,250,0.25)" bg="linear-gradient(135deg,#0F2742,#143B63 52%,#0B2239)" surface="linear-gradient(135deg,#1B6E3A,#2A9652)" overlay="radial-gradient(circle at 72% 28%,rgba(96,165,250,0.22),transparent 34%), linear-gradient(135deg,rgba(255,255,255,0.04),rgba(0,0,0,0.16))" dot="#60A5FA" dotAlt="#F59E0B"/>
                   </div>}
-                  {b.split&&<div style={{display:"flex",flexWrap:"wrap",gap:6,marginTop:8,marginLeft:48}}>
-                    {b.stations.map(function(st,si){return <span key={si} style={{display:"inline-flex",alignItems:"center",gap:5,padding:"4px 10px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderLeft:"3px solid "+st.col,borderRadius:6,fontSize:11,color:C.tm}}>
-                      <span style={{width:6,height:6,borderRadius:3,background:st.col}}/>
-                      {st.name}
-                    </span>})}
+                  {b.split&&<div style={{display:"flex",flexDirection:"column",gap:6,marginTop:8,marginLeft:48}}>
+                    {b.stations.map(function(st,si){return <div key={si} style={{padding:"8px 10px",background:C.ra,borderLeft:"3px solid "+st.col,borderRadius:8}}>
+                      <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}><span style={{width:6,height:6,borderRadius:3,background:st.col}}/><span style={{fontSize:9,fontWeight:800,color:st.col}}>{st.label}</span><span style={{fontSize:11,fontWeight:700,color:C.tx}}>{st.name}</span></div>
+                      <p style={{margin:"4px 0 0",fontSize:10,color:C.tm,lineHeight:1.45}}>{st.desc}</p>
+                      {st.cue&&<div style={{marginTop:5,background:"rgba(255,255,255,0.03)",borderLeft:"2px solid "+st.col,padding:"4px 8px",borderRadius:"0 6px 6px 0"}}><span style={{fontSize:9,fontWeight:800,color:st.col}}>{"CUE"}</span><span style={{fontSize:10,color:C.tm,marginLeft:6}}>{st.cue}</span></div>}
+                      {si===0&&ph>=9&&<div style={{marginTop:7,animation:"fadeU 0.4s ease"}}>
+                        <div style={{display:"inline-flex",alignItems:"center",gap:6,marginBottom:5}}><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#60A5FA" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg><span style={{fontSize:9,fontWeight:700,color:"#60A5FA",textTransform:"uppercase",letterSpacing:0.5}}>{"Videoeksempel · NHF Øvelsesbanken"}</span></div>
+                        <DemoVideoThumb kicker="NHF Øvelsesbanken" title="Angrep 2v1 — timing og valg" meta="Norges Håndballforbund · 1:48" duration="1:48" badge="Angrep" border="rgba(96,165,250,0.25)" bg="linear-gradient(135deg,#25133A,#1D2D63 54%,#101B33)" surface="linear-gradient(135deg,#6C2BD9,#2563EB)" overlay="radial-gradient(circle at 28% 24%,rgba(255,255,255,0.12),transparent 28%), linear-gradient(135deg,rgba(255,255,255,0.04),rgba(0,0,0,0.18))" dot="#F97316" dotAlt="#22C55E"/>
+                      </div>}
+                    </div>})}
                   </div>}
                 </div>;
               })}
@@ -284,30 +357,33 @@ function Step3(){
   var es=useState(false);var expanded=es[0];var setExpanded=es[1];
   var todayRef=useRef(null);
   var listRef=useRef(null);
+  var iv=useInViewOnce({threshold:0.3,rootMargin:"0px 0px -12% 0px"});var stepRef=iv[0];var inView=iv[1];
   useEffect(function(){
-    var t=setTimeout(function(){
+    if(!inView)return;
+    var t1;var t2;var raf=0;
+    t1=setTimeout(function(){
       setExpanded(true);
-      setTimeout(function(){
+      t2=setTimeout(function(){
         if(todayRef.current&&listRef.current){
           var top=todayRef.current.offsetTop-listRef.current.offsetTop-10;
           var start=listRef.current.scrollTop;
           var diff=top-start;
           var dur=1200;var t0=null;
-          function step(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/dur,1);var ease=p<0.5?2*p*p:(4-2*p)*p-1;listRef.current.scrollTop=start+diff*ease;if(p<1)requestAnimationFrame(step)}
-          requestAnimationFrame(step);
+          function step(ts){if(!t0)t0=ts;var p=Math.min((ts-t0)/dur,1);var ease=p<0.5?2*p*p:(4-2*p)*p-1;listRef.current.scrollTop=start+diff*ease;if(p<1)raf=requestAnimationFrame(step)}
+          raf=requestAnimationFrame(step);
         }
       },300);
     },1200);
-    return function(){clearTimeout(t)};
-  },[]);
-  return <div style={{maxWidth:680,margin:"0 auto"}}>
+    return function(){clearTimeout(t1);clearTimeout(t2);if(raf)cancelAnimationFrame(raf)};
+  },[inView]);
+  return <div ref={stepRef} style={{maxWidth:680,margin:"0 auto",height:"100%",display:"flex",flexDirection:"column"}}>
     <div style={{textAlign:"center",marginBottom:14}}>
       <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(74,222,128,0.10)",border:"1px solid rgba(74,222,128,0.2)",borderRadius:8,padding:"5px 14px",fontSize:11,fontWeight:800,color:C.gn,letterSpacing:0.5,textTransform:"uppercase",marginBottom:10}}>{"Resultatet"}</div>
       <h3 style={{fontSize:"clamp(20px,3vw,26px)",fontWeight:900,color:C.tx,margin:"0 0 6px",letterSpacing:"-0.3px"}}>{"Hele laget ser planen \u2014 p\u00e5 \u00e9n plass"}</h3>
       <p style={{fontSize:14,color:C.tm,margin:0,lineHeight:1.5}}>{"Alle \u00f8kter samlet. Trykk p\u00e5 en for \u00e5 se detaljer."}</p>
     </div>
 
-    <div style={{position:"relative",background:"#161514",border:"1px solid rgba(255,255,255,0.15)",borderRadius:14,overflow:"hidden",boxShadow:"0 12px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)"}}>
+    <div style={{position:"relative",background:"#161514",border:"1px solid rgba(255,255,255,0.15)",borderRadius:14,overflow:"hidden",boxShadow:"0 12px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)",flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
       <div style={{display:"flex",alignItems:"center",gap:8,padding:"9px 14px",background:"linear-gradient(180deg,#2c2b28,#242320)",borderBottom:"1px solid rgba(255,255,255,0.1)"}}>
         <div style={{display:"flex",gap:6,marginRight:6}}>
           <span style={{width:10,height:10,borderRadius:5,background:"#ff5f57"}}/>
@@ -320,8 +396,8 @@ function Step3(){
         </div>
       </div>
 
-      <div style={{background:C.sf}}>
-        <div style={{padding:"12px 16px",borderBottom:"1px solid "+C.bd,display:"flex",alignItems:"center",gap:10}}>
+      <div style={{background:C.sf,flex:1,minHeight:0,display:"flex",flexDirection:"column"}}>
+        <div style={{padding:"12px 16px",borderBottom:"1px solid "+C.bd,display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
           <span style={{display:"inline-flex",alignItems:"center",gap:6}}>
             <span style={{fontSize:14,fontWeight:900,color:C.ac,letterSpacing:"-0.5px"}}>{"whistl"}</span>
           </span>
@@ -332,7 +408,7 @@ function Step3(){
           <span style={{fontSize:10,color:C.td,fontFamily:mo}}>{"april 2025"}</span>
         </div>
 
-        <div ref={listRef} style={{padding:"10px 14px",maxHeight:420,overflowY:"auto"}}>
+        <div ref={listRef} style={{padding:"10px 14px",flex:1,minHeight:0,overflowY:"auto"}}>
           <div style={{display:"flex",flexDirection:"column",gap:5}}>
             {teamSessions.map(function(s,i){
               if(s.week){return <div key={i} style={{display:"flex",alignItems:"center",gap:8,padding:"6px 4px 2px",marginTop:i>0?4:0}}>
@@ -389,7 +465,7 @@ function Step3(){
                   <div style={{fontSize:14,fontWeight:900,color:past?C.td:C.tx,lineHeight:1,marginTop:2}}>{s.n}</div>
                 </div>
                 <div style={{flex:1,minWidth:0}}>
-                  <div style={{fontSize:12,fontWeight:700,color:past?C.tm:C.tx,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.title||<span style={{color:C.td,fontStyle:"italic"}}>{"Ikke planlagt enda"}</span>}</div>
+                  <div style={{fontSize:12,fontWeight:700,color:past?C.tm:C.tx,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{s.title||<span style={{color:C.td,fontStyle:"italic"}}>{"Ikke planlagt enn\u00e5"}</span>}</div>
                   <div style={{fontSize:10,color:C.td,marginTop:2}}>{s.time+" \u00b7 "+s.meta}</div>
                 </div>
                 {past&&<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.gn} strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>}
@@ -421,8 +497,8 @@ function WaitlistForm(){
     <p style={{fontSize:15,color:C.tm,margin:0,lineHeight:1.6}}>{"Vi sender deg en invitasjon s\u00e5 fort Whistl er klar. Takk for interessen!"}</p>
   </div>;
   return <div style={{background:"linear-gradient(135deg,rgba(232,88,12,0.12),rgba(232,88,12,0.03))",border:"1px solid rgba(232,88,12,0.2)",borderRadius:20,padding:"40px 28px"}}>
-    <h2 style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,margin:"0 0 8px"}}>{"Pr\u00f8ve Whistl?"}</h2>
-    <p style={{fontSize:15,color:C.tm,margin:"0 0 24px",lineHeight:1.5}}>{"Whistl er snart klar. Meld deg p\u00e5 ventelisten \u2014"}</p>
+    <h2 style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,margin:"0 0 8px"}}>{"Klar for \u00e5 pr\u00f8ve Whistl?"}</h2>
+    <p style={{fontSize:15,color:C.tm,margin:"0 0 24px",lineHeight:1.5}}>{"Whistl er snart klar. Meld deg p\u00e5 ventelisten og f\u00e5 tidlig tilgang."}</p>
     <form onSubmit={handleSubmit} style={{maxWidth:400,margin:"0 auto",display:"flex",flexDirection:"column",gap:10}}>
       <input value={name} onChange={function(e){setName(e.target.value)}} placeholder="Navn" style={{background:C.ra,border:"1px solid "+C.bd,borderRadius:10,padding:"12px 14px",fontSize:14,color:C.tx,outline:"none",fontFamily:fn}}/>
       <input value={email} onChange={function(e){setEmail(e.target.value)}} type="email" required placeholder="E-post *" style={{background:C.ra,border:"1px solid "+C.bd,borderRadius:10,padding:"12px 14px",fontSize:14,color:C.tx,outline:"none",fontFamily:fn}}/>
@@ -437,6 +513,35 @@ function WaitlistForm(){
       {err&&<p style={{fontSize:13,color:C.rd,margin:"4px 0 0",fontWeight:600}}>{err}</p>}
     </form>
     <p style={{fontSize:11,color:C.td,marginTop:12}}>{"Ingen spam. Vi sender kun invitasjonen."}</p>
+  </div>;
+}
+
+function ContactForm(){
+  var ns=useState("");var name=ns[0];var setName=ns[1];
+  var es=useState("");var email=es[0];var setEmail=es[1];
+  var ms=useState("");var message=ms[0];var setMessage=ms[1];
+  var ss=useState(false);var sent=ss[0];var setSent=ss[1];
+  var ls=useState(false);var loading=ls[0];var setLoading=ls[1];
+  var errs=useState("");var err=errs[0];var setErr=errs[1];
+  function handleSubmit(e){e.preventDefault();if(!email||!message||loading)return;setLoading(true);setErr("");
+    fetch("https://formspree.io/f/maqaelpl",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:name,email:email,message:message,role:"kontakt"})})
+    .then(function(r){if(r.ok){setSent(true)}else{setErr("Noe gikk galt. Pr\u00f8v igjen.")}setLoading(false)})
+    .catch(function(){setErr("Kunne ikke sende. Sjekk internett og pr\u00f8v igjen.");setLoading(false)})}
+  if(sent)return <div style={{background:"linear-gradient(135deg,rgba(96,165,250,0.12),rgba(96,165,250,0.03))",border:"1px solid rgba(96,165,250,0.25)",borderRadius:20,padding:"40px 32px",textAlign:"center"}}>
+    <div style={{fontSize:32,marginBottom:12}}>{"✉"}</div>
+    <h2 style={{fontSize:24,fontWeight:900,margin:"0 0 8px",color:C.tx}}>{"Meldingen er sendt"}</h2>
+    <p style={{fontSize:15,color:C.tm,margin:0,lineHeight:1.6}}>{"Vi svarer s\u00e5 fort vi kan."}</p>
+  </div>;
+  return <div style={{background:"linear-gradient(135deg,rgba(96,165,250,0.12),rgba(96,165,250,0.03))",border:"1px solid rgba(96,165,250,0.2)",borderRadius:20,padding:"40px 28px"}}>
+    <h2 style={{fontSize:"clamp(22px,4vw,32px)",fontWeight:900,margin:"0 0 8px"}}>{"Kontakt utviklerteamet"}</h2>
+    <p style={{fontSize:15,color:C.tm,margin:"0 0 24px",lineHeight:1.5}}>{"Har du sp\u00f8rsm\u00e5l, innspill eller noe som ikke funker? Send oss en melding."}</p>
+    <form onSubmit={handleSubmit} style={{maxWidth:520,margin:"0 auto",display:"flex",flexDirection:"column",gap:10}}>
+      <input value={name} onChange={function(e){setName(e.target.value)}} placeholder="Navn" style={{background:C.ra,border:"1px solid "+C.bd,borderRadius:10,padding:"12px 14px",fontSize:14,color:C.tx,outline:"none",fontFamily:fn}}/>
+      <input value={email} onChange={function(e){setEmail(e.target.value)}} type="email" required placeholder="E-post *" style={{background:C.ra,border:"1px solid "+C.bd,borderRadius:10,padding:"12px 14px",fontSize:14,color:C.tx,outline:"none",fontFamily:fn}}/>
+      <textarea value={message} onChange={function(e){setMessage(e.target.value)}} required placeholder="Melding *" rows={5} style={{background:C.ra,border:"1px solid "+C.bd,borderRadius:10,padding:"12px 14px",fontSize:14,color:C.tx,outline:"none",fontFamily:fn,resize:"vertical",minHeight:140}}/>
+      <button type="submit" disabled={loading} style={{background:loading?"#666":"linear-gradient(135deg,#2563EB,#3B82F6)",border:"none",borderRadius:10,padding:"14px 24px",fontSize:16,fontWeight:700,color:"#fff",cursor:loading?"wait":"pointer",boxShadow:loading?"none":"0 4px 20px rgba(59,130,246,0.28)",marginTop:4,fontFamily:fn,opacity:loading?0.7:1,transition:"opacity 0.2s"}}>{loading?"Sender...":"Send melding"}</button>
+      {err&&<p style={{fontSize:13,color:C.rd,margin:"4px 0 0",fontWeight:600}}>{err}</p>}
+    </form>
   </div>;
 }
 
@@ -458,12 +563,12 @@ var sessions=[
   {day:"L\u00f8r",n:"19",time:"10:00",title:"Kamp vs. Nordstrand",meta:"Kamp \u00b7 Andreas"},
 ];
 var feats=[
-  {i:"\u26a1",t:"Bare skriv \u2014 s\u00e5 funker det",d:"Skriv \u00f8kten som en vanlig melding. AI-en strukturerer alt.",col:C.ac},
-  {i:"\ud83c\udfaf",t:"Stasjoner p\u00e5 plass automatisk",d:"Nevn hva hver gruppe skal gj\u00f8re. Byttetid og coach cues legges til.",col:C.violet},
-  {i:"\u270f\ufe0f",t:"Juster rett i planen",d:"Endre titler, beskrivelser og cues direkte i forh\u00e5ndsvisningen.",col:C.teal},
-  {i:"\ud83d\ude80",t:"\u00c9n knapp \u2014 ferdig delt",d:"Eksporter som HTML eller kopier rett til e-post eller WhatsApp.",col:C.amber},
-  {i:"\ud83d\udc65",t:"Lag og lagoppsett",d:"Importer fra Hoopit eller legg til manuelt. Bland og del inn i lag.",col:C.pk},
-  {i:"\ud83d\udcf1",t:"Funker p\u00e5 alt",d:"Ser bra ut p\u00e5 mobil, nettbrett og PC.",col:C.blue},
+  {i:"\u26a1",t:"Du trenger ikke endre en eneste vane",d:"Du planlegger allerede i hodet og som en melding. Whistl tar det du alltid har gjort og gj\u00f8r resultatet ti ganger bedre \u2014 automatisk.",col:C.ac},
+  {i:"\ud83c\udfaf",t:"Profesjonell struktur uten ekstra arbeid",d:"Nevn hva du vil jobbe med. Tider, stasjoner, byttetider og coach cues legges til uten at du gj\u00f8r noe ekstra.",col:C.violet},
+  {i:"\u270f\ufe0f",t:"Juster det som ikke stemmer",d:"Noe som m\u00e5 endres? Rediger titler, cues og detaljer direkte i planen. Ingen steg.",col:C.teal},
+  {i:"\ud83d\ude80",t:"Delt f\u00f8r du har forlatt hallen",d:"Eksporter som HTML, kopier rett til Messenger eller e-post. Hele laget ser planen p\u00e5 sekunder.",col:C.amber},
+  {i:"\ud83d\udc65",t:"Lag og spillerlister",d:"Importer fra Hoopit eller legg til manuelt. Del automatisk inn i lag \u2014 og print hvem som spiller hvor.",col:C.pk},
+  {i:"\ud83e\udde0",t:"Smartere for hvert lag",d:<span>{"Whistl husker fokusomr\u00e5der, tidligere \u00f8kter, samt anbefalte f\u00f8ringer fra "}<em style={{fontStyle:"italic",color:C.tx}}>Utviklingstrappa</em>{". Jo mer du bruker Whistl, desto bedre blir forslagene."}</span>,col:C.blue},
 ];
 var stepInfo=[
   {label:"Problemet",sub:"Gruppechatten",bl:"Planen forsvinner i st\u00f8yen.",col:C.rd},
@@ -475,6 +580,7 @@ var stepInfo=[
 /* ── Main ── */
 export default function Landing(){
   var ss=useState(0);var step=ss[0];var setStep=ss[1];
+  var cs=useState(false);var contactOpen=cs[0];var setContactOpen=cs[1];
   var touchRef=useRef(null);
   function prev(){setStep(function(p){return p>0?p-1:3})}
   function next(){setStep(function(p){return p<3?p+1:0})}
@@ -487,9 +593,15 @@ export default function Landing(){
     el.addEventListener("touchend",onEnd,{passive:true});
     return function(){el.removeEventListener("touchstart",onStart);el.removeEventListener("touchend",onEnd)};
   },[]);
+  useEffect(function(){
+    if(!contactOpen)return;
+    function onKey(e){if(e.key==="Escape")setContactOpen(false)}
+    window.addEventListener("keydown",onKey);
+    return function(){window.removeEventListener("keydown",onKey)};
+  },[contactOpen]);
 
   return <div style={{minHeight:"100vh",background:C.bg,color:C.tx,fontFamily:fn,overflowX:"hidden"}}>
-    <style>{"*{box-sizing:border-box;margin:0}body{margin:0;background:#1C1B18}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes dot{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.2)}}@keyframes fadeU{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes slideD{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(232,88,12,0.25);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(232,88,12,0);transform:scale(1.02)}}@keyframes beam{from{transform:translateX(-100%);opacity:0}20%{opacity:1}80%{opacity:1}to{transform:translateX(260%);opacity:0}}@keyframes toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.cta-btn:hover{transform:translateY(-1px)!important;box-shadow:0 6px 28px rgba(232,88,12,0.45)!important}.step-tab:hover{border-color:rgba(255,255,255,0.12)!important;background:rgba(255,255,255,0.04)!important}.step-arrow:hover{opacity:1!important;background:#3a3935!important}@media(max-width:720px){.s2split{flex-direction:column!important}.s2chat{flex:1 1 auto!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.08)!important;min-height:280px!important}.s2plan{min-height:260px!important}.step-arrow{display:none!important}.step-tabs{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.step-tab{min-height:74px!important;padding:12px 0 10px!important}.step-tab-copy{display:none!important}}"}</style>
+    <style>{"*{box-sizing:border-box;margin:0}body{margin:0;background:#1C1B18}@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}@keyframes fadeU{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}@keyframes slideD{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(232,88,12,0.25);transform:scale(1)}50%{box-shadow:0 0 0 10px rgba(232,88,12,0);transform:scale(1.02)}}@keyframes beam{from{transform:translateX(-100%);opacity:0}20%{opacity:1}80%{opacity:1}to{transform:translateX(260%);opacity:0}}@keyframes toast{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}.cta-btn:hover{transform:translateY(-1px)!important;box-shadow:0 6px 28px rgba(232,88,12,0.45)!important}.step-tab:hover{border-color:rgba(255,255,255,0.12)!important;background:rgba(255,255,255,0.04)!important}.step-arrow:hover{opacity:1!important;background:#3a3935!important}.step-stage{height:620px}@media(max-width:720px){.s2split{flex-direction:column!important}.s2chat{flex:0 0 44%!important;border-right:none!important;border-bottom:1px solid rgba(255,255,255,0.08)!important;min-height:0!important}.s2plan{flex:1 1 auto!important;min-height:0!important}.step-arrow{display:none!important}.step-tabs{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.step-tab{min-height:74px!important;padding:12px 0 10px!important}.step-tab-copy{display:none!important}.step-stage{height:720px!important}}"}</style>
 
     {/* Compact hero + steps */}
     <div style={{maxWidth:900,margin:"0 auto",padding:"48px 24px 0",textAlign:"center"}}>
@@ -499,10 +611,12 @@ export default function Landing(){
     </div>
 
     <div style={{textAlign:"center",marginBottom:12}}>
-      <FI delay={200}><a href="#waitlist" className="cta-btn" style={{display:"inline-flex",alignItems:"center",gap:10,background:"linear-gradient(135deg,#E8580C,#F06B1F)",borderRadius:10,padding:"13px 28px",color:"#fff",fontSize:15,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 24px rgba(232,88,12,0.3)",transition:"transform 0.15s,box-shadow 0.15s"}}>
-        {"F\u00e5 Whistl til ditt lag"}
-        <RocketLaunchRoundedIcon style={{fontSize:18}} />
-      </a>
+      <FI delay={200}><div style={{display:"inline-flex",flexWrap:"wrap",justifyContent:"center",gap:10}}>
+        <a href="#waitlist" className="cta-btn" style={{display:"inline-flex",alignItems:"center",gap:10,background:"linear-gradient(135deg,#E8580C,#F06B1F)",borderRadius:10,padding:"13px 28px",color:"#fff",fontSize:15,fontWeight:700,textDecoration:"none",boxShadow:"0 4px 24px rgba(232,88,12,0.3)",transition:"transform 0.15s,box-shadow 0.15s"}}>
+          {"F\u00e5 Whistl til ditt lag"}
+          <RocketLaunchRoundedIcon style={{fontSize:18}} />
+        </a>
+      </div>
       <p style={{fontSize:12,color:C.td,marginTop:10,letterSpacing:"0.2px"}}>{" "}</p></FI>
     </div>
 
@@ -520,7 +634,7 @@ export default function Landing(){
         </button>})}
       </div></FI>
 
-      <FI delay={300}><div ref={touchRef} style={{minHeight:440,position:"relative"}}>
+      <FI delay={300}><div ref={touchRef} className="step-stage" style={{position:"relative"}}>
         <button className="step-arrow" onClick={prev} aria-label="Previous step" style={{position:"absolute",left:-20,top:"50%",transform:"translateY(-50%)",zIndex:20,width:36,height:36,borderRadius:18,background:C.sf,border:"1px solid "+C.bd,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",opacity:0.7,transition:"opacity 0.2s"}}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.tx} strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
@@ -532,21 +646,21 @@ export default function Landing(){
         {step===2&&<Step3/>}
 
         {/* Step 4: Feature montage */}
-        {step===3&&<div style={{maxWidth:660,margin:"0 auto"}}>
+        {step===3&&<div style={{maxWidth:660,margin:"0 auto",height:"100%",overflowY:"auto",overflowX:"hidden",paddingRight:4}}>
           <div style={{textAlign:"center",marginBottom:20}}>
             <div style={{display:"inline-flex",alignItems:"center",gap:6,background:C.violetAl,border:"1px solid rgba(167,139,250,0.25)",borderRadius:8,padding:"5px 14px",fontSize:11,fontWeight:800,color:C.violet,letterSpacing:0.5,textTransform:"uppercase",marginBottom:10}}>{"Verkt\u00f8yet"}</div>
-            <h3 style={{fontSize:"clamp(20px,3vw,26px)",fontWeight:900,color:C.tx,margin:"0 0 6px",letterSpacing:"-0.3px"}}>{"Alt du trenger \u2014 ingenting du ikke trenger"}</h3>
-            <p style={{fontSize:14,color:C.tm,margin:0,lineHeight:1.5}}>{"Bygget for trenere som vil planlegge raskt og dele enkelt."}</p>
+            <h3 style={{fontSize:"clamp(20px,3vw,26px)",fontWeight:900,color:C.tx,margin:"0 0 6px",letterSpacing:"-0.3px"}}>{"Planen din er allerede klar \u2014 den trenger bare Whistl"}</h3>
+            <p style={{fontSize:14,color:C.tm,margin:0,lineHeight:1.5}}>{"Du skriver allerede. Du planlegger allerede. Whistl tar det du alltid har gjort og gj\u00f8r resultatet dramatisk bedre."}</p>
           </div>
 
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(190px,1fr))",gap:10}}>
             {[
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.violet} strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,t:"Hoopit-import",d:"Importer spillerlister rett fra Hoopit. Lag oppdateres automatisk.",col:C.violet},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,t:"Lag og lagoppsett",d:"Del inn i lag automatisk eller manuelt. Bland og shuffle med \u00e9n knapp.",col:C.teal},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.ac} strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,t:"Rediger rett i planen",d:"Juster titler, cues og stasjoner direkte i forh\u00e5ndsvisningen. Ingen ekstra steg.",col:C.ac},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,t:"Delt kalender",d:"\u00d8ktene havner p\u00e5 lagets kalender. Alle trenerne ser hva som er planlagt.",col:C.amber},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.pk} strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,t:"Eksporter som HTML",d:"Last ned \u00f8ktplanen som en ren HTML-fil. Send p\u00e5 e-post, WhatsApp eller skriv ut.",col:C.pk},
-              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.blue} strokeWidth="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>,t:"Funker overalt",d:"Desktop, nettbrett og mobil. Responsivt design som tilpasser seg skjermen.",col:C.blue},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.violet} strokeWidth="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,t:"Ingen ny m\u00e5te \u00e5 planlegge p\u00e5",d:"Du skriver \u00f8kten slik du alltid har gjort \u2014 som en melding. Whistl leser den og lager en ferdig, profesjonell plan. Ingenting nytt \u00e5 l\u00e6re.",col:C.violet},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.teal} strokeWidth="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>,t:"Struktur som l\u00f8fter \u00f8ktkvaliteten",d:"Tider, stasjoner, byttetider og coach cues legges til automatisk. Resultatet er en plan som hjelper hele treningsteamet \u2014 ikke bare deg.",col:C.teal},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.ac} strokeWidth="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>,t:"Juster det som ikke stemmer",d:"Rediger titler, cues og stasjoner direkte i planen. Ingen ekstra skjerm, ingen omstart. Det er din plan \u2014 Whistl bare strukturerer den.",col:C.ac},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,t:"Laget ser det samme som deg",d:"\u00d8kten havner p\u00e5 lagets delte kalender automatisk. Ingen trenger \u00e5 sp\u00f8rre \u00abhva kj\u00f8rer vi i dag?\u00bb",col:C.amber},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.pk} strokeWidth="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,t:"Delt f\u00f8r du har forlatt hallen",d:"Eksporter som HTML, kopier til WhatsApp eller e-post med \u00e9n knapp. Spillere og foreldre vet hva som skjer \u2014 f\u00f8r de sp\u00f8r.",col:C.pk},
+              {icon:<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.blue} strokeWidth="2"><path d="M9.5 2A2.5 2.5 0 0112 4.5v15a2.5 2.5 0 01-5 0v-15A2.5 2.5 0 019.5 2z"/><path d="M14.5 8A2.5 2.5 0 0117 10.5v9a2.5 2.5 0 01-5 0v-9A2.5 2.5 0 0114.5 8z"/></svg>,t:"Smartere for hvert lag",d:<span>{"Whistl husker fokusomr\u00e5der, tidligere \u00f8kter, samt anbefalte f\u00f8ringer fra "}<em style={{fontStyle:"italic",color:C.tx}}>Utviklingstrappa</em>{". Jo mer du bruker det, desto bedre blir forslagene."}</span>,col:C.blue},
             ].map(function(f,i){return <FI key={i} delay={i*80} style={{background:C.sf,border:"1px solid "+C.bd,borderRadius:12,padding:"18px 16px",display:"flex",flexDirection:"column",gap:10}}>
               <div style={{width:36,height:36,borderRadius:10,background:f.col+"14",border:"1px solid "+f.col+"30",display:"flex",alignItems:"center",justifyContent:"center"}}>{f.icon}</div>
               <div style={{fontSize:14,fontWeight:800,color:C.tx}}>{f.t}</div>
@@ -598,8 +712,8 @@ export default function Landing(){
     <div style={{maxWidth:900,margin:"0 auto",padding:"0 24px 80px"}}>
       <FI delay={200}><div style={{textAlign:"center",maxWidth:600,margin:"0 auto"}}>
         <div style={{fontSize:56,color:C.ac,lineHeight:1,marginBottom:4,opacity:0.4}}>{"\u201c"}</div>
-        <p style={{fontSize:18,color:C.tm,lineHeight:1.7,fontStyle:"italic",margin:"0 0 16px"}}>{"F\u00f8r skrev jeg en lang melding i trenergruppa som folk scrollet forbi. N\u00e5 limer jeg inn det samme i Whistl, og to sekunder senere har jeg en oversiktlig plan med tider, stasjoner og cues."}</p>
-        <div style={{fontSize:13,color:C.td}}>Trener, Oslo</div>
+        <p style={{fontSize:18,color:C.tm,lineHeight:1.7,fontStyle:"italic",margin:"0 0 16px"}}>{"F\u00f8r skrev vi en lang melding i trenergruppa som raskt forsvant i hverdagskaoset. N\u00e5 limer jeg inn det samme i Whistl, og to sekunder senere har jeg en oversiktlig plan med tider, stasjoner, videoer og cues."}</p>
+        <div style={{fontSize:13,color:C.td}}>Gard, trener, Kolbotn</div>
       </div></FI>
     </div>
 
@@ -608,6 +722,45 @@ export default function Landing(){
       <FI delay={200}><WaitlistForm/></FI>
     </div>
 
-    <div style={{borderTop:"1px solid "+C.bd,padding:"32px 24px",textAlign:"center"}}><span style={{fontSize:14,fontWeight:900,color:C.td,letterSpacing:"-0.5px"}}>{"whistl"}</span><span style={{fontSize:12,color:C.td}}>{" \u00b7 Laget av trenere, for trenere."}</span></div>
+    {contactOpen&&<div onClick={function(){setContactOpen(false)}} style={{position:"fixed",inset:0,zIndex:200,background:"rgba(10,10,10,0.68)",backdropFilter:"blur(8px)",display:"flex",alignItems:"center",justifyContent:"center",padding:"24px"}}>
+      <div onClick={function(e){e.stopPropagation()}} style={{width:"min(680px,100%)",maxHeight:"min(90vh,860px)",overflowY:"auto",position:"relative"}}>
+        <button onClick={function(){setContactOpen(false)}} aria-label="Lukk kontaktvindu" style={{position:"absolute",top:14,right:14,zIndex:2,width:34,height:34,borderRadius:17,border:"1px solid rgba(255,255,255,0.08)",background:"rgba(0,0,0,0.18)",color:C.tx,cursor:"pointer",fontSize:18,lineHeight:1}}>{"\u00d7"}</button>
+        <ContactForm/>
+      </div>
+    </div>}
+
+    <div style={{borderTop:"1px solid "+C.bd,padding:"36px 24px 28px"}}>
+      <div style={{maxWidth:900,margin:"0 auto"}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(180px,1fr))",gap:24,alignItems:"start",marginBottom:24}}>
+          <div>
+            <div style={{fontSize:18,fontWeight:900,color:C.tx,letterSpacing:"-0.5px",marginBottom:8}}>{"whistl"}</div>
+            <p style={{fontSize:13,color:C.tm,lineHeight:1.6,margin:0}}>{"AI-planlegging for trenere som vil bruke mindre tid p\u00e5 koordinering og mer tid p\u00e5 selve \u00f8kta."}</p>
+          </div>
+          <div>
+            <div style={{fontSize:11,fontWeight:800,color:C.td,textTransform:"uppercase",letterSpacing:0.8,marginBottom:10}}>{"Produkt"}</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              <a href="#waitlist" style={{fontSize:13,color:C.tx,textDecoration:"none"}}>{"Venteliste"}</a>
+              <button onClick={function(){setStep(1);window.scrollTo({top:0,behavior:"smooth"})}} style={{padding:0,border:"none",background:"transparent",textAlign:"left",fontSize:13,color:C.tx,cursor:"pointer",fontFamily:fn}}>{"Se demo"}</button>
+              <button onClick={function(){setContactOpen(true)}} style={{padding:0,border:"none",background:"transparent",textAlign:"left",fontSize:13,color:C.tx,cursor:"pointer",fontFamily:fn}}>{"Kontakt utviklerteamet"}</button>
+            </div>
+          </div>
+          <div>
+            <div style={{fontSize:11,fontWeight:800,color:C.td,textTransform:"uppercase",letterSpacing:0.8,marginBottom:10}}>{"For lag"}</div>
+            <div style={{display:"flex",flexDirection:"column",gap:8}}>
+              <span style={{fontSize:13,color:C.tm}}>{"Tidlig tilgang for trenere og lagledere"}</span>
+              <span style={{fontSize:13,color:C.tm}}>{"Fungerer p\u00e5 mobil, nettbrett og desktop"}</span>
+              <span style={{fontSize:13,color:C.tm}}>{"Bygget av trenere, for trenere"}</span>
+            </div>
+          </div>
+        </div>
+        <div style={{display:"flex",justifyContent:"space-between",gap:12,flexWrap:"wrap",paddingTop:18,borderTop:"1px solid "+C.bd}}>
+          <span style={{fontSize:12,color:C.td}}>{"whistl \u00b7 Laget av trenere, for trenere."}</span>
+          <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
+            <a href="#waitlist" style={{fontSize:12,color:C.td,textDecoration:"none"}}>{"Venteliste"}</a>
+            <button onClick={function(){setContactOpen(true)}} style={{padding:0,border:"none",background:"transparent",fontSize:12,color:C.td,cursor:"pointer",fontFamily:fn}}>{"Kontakt"}</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>;
 }
